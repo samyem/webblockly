@@ -1,0 +1,59 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" 
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:w="urn:import:com.samyem.webblocks.client"	
+	>
+    <ui:style>        
+        .eastPanel {
+            background-color: #F60;
+        }
+        .westPanel {
+            background-color: #EEE;
+        }
+        .northPanel {
+            background-color: #39F;
+        }
+        .southPanel {
+            background-color: #99C;
+        }
+        .centerPanel {
+            background-color: white;
+        }       
+        .docPanel{
+			overflow: visible !important;
+		}
+		.docElement{
+			cursor: pointer;
+		}
+    </ui:style>
+    
+     <g:DockLayoutPanel unit='EM'>
+       <g:north size='2'>
+         <g:FlowPanel styleName="{style.northPanel}">
+           <g:Label>This is the NORTH panel</g:Label>
+         </g:FlowPanel>
+       </g:north>
+       <g:west size='15'>
+         <g:FlowPanel styleName="{style.westPanel}" ui:field="palletPanel">
+         	<w:ComponentPallet ui:field="pallet"></w:ComponentPallet>
+         </g:FlowPanel>
+       </g:west>
+       <g:center type="g:SingleChildWidgetType">
+       	<g:ScrollPanel styleName="{style.centerPanel}" ui:field="documentCanvas">
+       		<g:AbsolutePanel height="100%" ui:field="docPanel" styleName="{style.docPanel}">
+       		</g:AbsolutePanel>
+       	</g:ScrollPanel>
+       </g:center>
+       <g:east size='15'>
+         <g:FlowPanel styleName="{style.eastPanel}">
+           <g:Label>Properties</g:Label>
+         </g:FlowPanel>
+       </g:east>     
+        <g:south size="2">
+         <g:FlowPanel styleName="{style.southPanel}">
+           <g:Label>Console</g:Label>
+         </g:FlowPanel>
+        </g:south>       
+     </g:DockLayoutPanel>
+	
+</ui:UiBinder>
