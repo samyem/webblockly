@@ -26,61 +26,72 @@
 			cursor: pointer;
 		}
     </ui:style>
-    
-     <g:DockLayoutPanel unit='EM'>
-       <g:north size='2'>
-         <g:FlowPanel styleName="{style.northPanel}">
-           <g:Label>This is the NORTH panel</g:Label>
-         </g:FlowPanel>
-       </g:north>
 
-       <g:center type="g:SingleChildWidgetType">
-       	<g:TabLayoutPanel barHeight="3" barUnit="EM">
-       		<g:tab>
-       			<g:header>Design</g:header>
-     			<g:DockLayoutPanel unit='EM'>
-			       <g:west size='15'>
-			         <g:FlowPanel styleName="{style.westPanel}" ui:field="palletPanel">
-			         	<w:ComponentPallet ui:field="pallet"></w:ComponentPallet>
-			         </g:FlowPanel>
-			       </g:west>
-       				<g:center type="g:SingleChildWidgetType">
-				       	<g:ScrollPanel styleName="{style.centerPanel}" ui:field="documentCanvas">
-				       		<g:AbsolutePanel height="100%" ui:field="docPanel" styleName="{style.docPanel}">
-				       		</g:AbsolutePanel>
-				       	</g:ScrollPanel>
-       				</g:center>
-     			</g:DockLayoutPanel>
-       		</g:tab>
-       		<g:tab>
-       			<g:header>Code</g:header>
-     			<g:DockLayoutPanel unit='EM'>
-			       <g:west size='15'>
-			         <g:FlowPanel styleName="{style.westPanel}" ui:field="codePalletPanel">
-			         	<w:CodePallet ui:field="codePallet"></w:CodePallet>
-			         </g:FlowPanel>
-			       </g:west>
-       				<g:center type="g:SingleChildWidgetType">
-				       	<g:ScrollPanel ui:field="codeScrollPanel">
-				       		<g:VerticalPanel ui:field="codePanel"></g:VerticalPanel>
-				       	</g:ScrollPanel>
-       				</g:center>
-     			</g:DockLayoutPanel>
-       		</g:tab>
-       	</g:TabLayoutPanel>
-       </g:center>
-
-       <g:east size='15'>
-         <g:FlowPanel styleName="{style.eastPanel}">
-           <g:Label>Properties</g:Label>
-         </g:FlowPanel>
-       </g:east>     
-
-        <g:south size="2">
-         <g:FlowPanel styleName="{style.southPanel}">
-           <g:Label>Console</g:Label>
-         </g:FlowPanel>
-        </g:south>       
-     </g:DockLayoutPanel>
-	
+	<g:SplitLayoutPanel>
+	      <g:center>
+				
+		     <g:DockLayoutPanel unit='EM'>
+		       <g:north size='2'>
+		         <g:FlowPanel styleName="{style.northPanel}">
+		           <g:Label>This is the NORTH panel</g:Label>
+		         </g:FlowPanel>
+		       </g:north>
+		
+		       <g:center type="g:SingleChildWidgetType">
+		       	<g:TabLayoutPanel barHeight="3" barUnit="EM">
+		       		<g:tab>
+		       			<g:header>Design</g:header>
+		     			<g:SplitLayoutPanel>
+					       <g:west size='100'>
+					         <g:FlowPanel styleName="{style.westPanel}" ui:field="palletPanel">
+					         	<w:ComponentPallet ui:field="pallet"></w:ComponentPallet>
+					         </g:FlowPanel>
+					       </g:west>
+		       				<g:center type="g:SingleChildWidgetType">
+						       	<g:ScrollPanel styleName="{style.centerPanel}" ui:field="documentCanvas">
+						       		<g:AbsolutePanel height="100%" ui:field="docPanel" styleName="{style.docPanel}">
+						       		</g:AbsolutePanel>
+						       	</g:ScrollPanel>
+		       				</g:center>
+		       				
+					       <g:east size='200'>
+							 <g:Grid ui:field="propertyGrid">
+							  <g:row styleName="optionalHeaderStyle">
+							    <g:customCell>
+							      <g:Label>Property</g:Label>
+							    </g:customCell>
+							    <g:customCell>
+							      <g:Label>Value</g:Label>
+							    </g:customCell>
+							  </g:row>
+							 </g:Grid>
+					       </g:east>     
+		       				
+		     			</g:SplitLayoutPanel>
+		       		</g:tab>
+		       		<g:tab>
+		       			<g:header>Code</g:header>
+		     			<g:DockLayoutPanel unit='EM'>
+					       <g:west size='15'>
+					         <g:FlowPanel styleName="{style.westPanel}" ui:field="codePalletPanel">
+					         	<w:CodePallet ui:field="codePallet"></w:CodePallet>
+					         </g:FlowPanel>
+					       </g:west>
+		       				<g:center type="g:SingleChildWidgetType">
+						       	<g:ScrollPanel ui:field="codeScrollPanel">
+						       		<g:VerticalPanel ui:field="codePanel"></g:VerticalPanel>
+						       	</g:ScrollPanel>
+		       				</g:center>
+		     			</g:DockLayoutPanel>
+		       		</g:tab>
+		       	</g:TabLayoutPanel>
+		       </g:center>
+		     </g:DockLayoutPanel>
+		</g:center>
+		<g:south size="100">
+	        <g:FlowPanel styleName="{style.southPanel}">
+	          <g:Label>Console</g:Label>
+	        </g:FlowPanel>
+		</g:south>
+	</g:SplitLayoutPanel>
 </ui:UiBinder>

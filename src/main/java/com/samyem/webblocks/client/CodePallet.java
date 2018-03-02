@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class CodePallet extends VerticalPanel {
 	public CodePallet() {
+
 		add(new Label("Code Pallet"));
 	}
 }

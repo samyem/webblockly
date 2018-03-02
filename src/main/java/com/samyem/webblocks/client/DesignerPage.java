@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -30,6 +31,9 @@ public class DesignerPage extends Composite {
 
 	@UiField
 	ComponentPallet pallet;
+
+	@UiField
+	Grid propertyGrid;
 
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
