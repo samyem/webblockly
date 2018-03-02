@@ -31,7 +31,7 @@ public class DesignerPage extends Composite {
 	@UiField
 	ComponentPallet pallet;
 
-	public DesignerPage(String firstName) {
+	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
 
 		documentCanvas.addDomHandler(event -> {
