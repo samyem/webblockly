@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!-- POM file generated with GWT webAppCreator -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.samyem.webblocks</groupId>
   <artifactId>WebBlocks</artifactId>
@@ -12,20 +11,15 @@
 
   <properties>
 
-    <!-- Setting maven.compiler.source to something different to 1.8
-         needs that you configure the sourceLevel in gwt-maven-plugin since
-         GWT compiler 2.8 requires 1.8 (see gwt-maven-plugin block below) -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
-    <!-- Don't let your Mac use a crazy non-standard encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- ensure all GWT deps use the same version (unless overridden) -->
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt</artifactId>
@@ -90,8 +84,7 @@
           <moduleName>com.samyem.webblocks.WebBlocks</moduleName>
           <moduleShortName>WebBlocks</moduleShortName>
           <failOnError>true</failOnError>
-          <!-- GWT compiler 2.8 requires 1.8, hence define sourceLevel here if you use
-               a different source language for java compilation -->
+          <!-- GWT compiler 2.8 requires 1.8, hence define sourceLevel here if you use a different source language for java compilation -->
           <sourceLevel>1.8</sourceLevel>
           <!-- Compiler configuration -->
           <compilerArgs>
