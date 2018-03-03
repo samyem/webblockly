@@ -41,5 +41,7 @@ public abstract class ComponentPalletItem {
 
 	public abstract void handleDocumentCanvasClick(ClickEvent event);
 
-	public abstract List<Property<?>> getProperties();
+	public List<Property<?>> getProperties() {
+		return properties;
+	}
 }

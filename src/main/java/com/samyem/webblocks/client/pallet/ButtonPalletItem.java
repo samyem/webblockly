@@ -1,6 +1,5 @@
 package com.samyem.webblocks.client.pallet;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -29,6 +28,14 @@ public class ButtonPalletItem extends ComponentPalletItem {
 	public ButtonPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
+		
+		TextProperty captionProp = new TextProperty();
+		captionProp.setKey("Caption");
+		properties.add(captionProp);
+
+		TextProperty backColorProp = new TextProperty();
+		backColorProp.setKey("Background Color");
+		properties.add(backColorProp);		
 	}
 
 	public Widget createWidget() {
@@ -92,17 +99,5 @@ public class ButtonPalletItem extends ComponentPalletItem {
 		return "button";
 	}
 
-	@Override
-	public List<Property<?>> getProperties() {
-		TextProperty captionProp = new TextProperty();
-		captionProp.setKey("Caption");
-		properties.add(captionProp);
-
-		TextProperty backColorProp = new TextProperty();
-		backColorProp.setKey("Background Color");
-		properties.add(backColorProp);
-
-		return properties;
-	}
 
 }

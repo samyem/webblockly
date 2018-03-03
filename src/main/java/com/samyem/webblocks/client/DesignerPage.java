@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DropEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.Property;
@@ -40,6 +42,12 @@ public class DesignerPage extends Composite {
 	@UiField
 	FlexTable propertyGrid;
 
+	@UiField
+	CodeEditor codeEditor;
+
+	@UiField
+	TabLayoutPanel tabs;
+
 	private Element lastSelectedElement;
 
 	public DesignerPage() {
@@ -60,8 +68,27 @@ public class DesignerPage extends Composite {
 
 		}, ClickEvent.getType());
 
+		initializeCodeEditor();
+		initializePropertyEditor();
+	}
+
+	private void initializePropertyEditor() {
 		propertyGrid.setText(0, 0, "Property");
 		propertyGrid.setText(0, 1, "Value");
+	}
+
+	private void initializeCodeEditor() {
+		SelectionHandler<Integer> handler = event -> {
+			if (event.getSelectedItem() == 1) {
+				codeEditor.initializeUI();
+			}
+		};
+		tabs.addSelectionHandler(handler);
+
+		tabs.addBeforeSelectionHandler(s -> {
+			GWT.log("before handler " + s.getItem());
+		});
+
 	}
 
 	private void handleClick(ClickEvent event) {

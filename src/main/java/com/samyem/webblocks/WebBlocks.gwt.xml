@@ -3,6 +3,7 @@
 <module rename-to='webblocks'>
   <inherits name='com.google.gwt.user.User'/>
 
+<!--   <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
 
   <entry-point class='com.samyem.webblocks.client.WebBlocks'/>

@@ -1,6 +1,5 @@
 package com.samyem.webblocks.client.pallet;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -30,6 +29,14 @@ public class LabelPalletItem extends ComponentPalletItem {
 	public LabelPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
+		
+		TextProperty textProp = new TextProperty();
+		textProp.setKey("Text");
+		properties.add(textProp);
+
+		TextProperty colorProp = new TextProperty();
+		colorProp.setKey("Color");
+		properties.add(colorProp);		
 	}
 
 	public Widget createWidget() {
@@ -92,16 +99,4 @@ public class LabelPalletItem extends ComponentPalletItem {
 		return obj;
 	}
 
-	@Override
-	public List<Property<?>> getProperties() {
-		TextProperty textProp = new TextProperty();
-		textProp.setKey("Text");
-		properties.add(textProp);
-
-		TextProperty colorProp = new TextProperty();
-		colorProp.setKey("Color");
-		properties.add(colorProp);
-
-		return properties;
-	}
 }
