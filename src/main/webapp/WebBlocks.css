@@ -37,7 +37,11 @@ h1 {
 	cursor: move;	
 }
 
+.docElement.selected {
+	border: thin dashed deepskyblue;
+	box-shadow: 0 0 5px 2px yellow; 
+}
+
 .docElement[contenteditable=true]{
-	cursor: default;
-	
+	cursor: default;	
 }

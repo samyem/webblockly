@@ -1,5 +1,6 @@
 package com.samyem.webblocks.client.pallet;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -14,6 +15,7 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
+import com.samyem.webblocks.shared.AppObject;
 
 /**
  * Item that creates new labels
@@ -78,4 +80,29 @@ public class ButtonPalletItem extends ComponentPalletItem {
 			currentButton = null;
 		}
 	}
+
+	@Override
+	public AppObject createAppObject() {
+		AppObject obj = super.createAppObject();
+		return obj;
+	}
+
+	@Override
+	public String getKey() {
+		return "button";
+	}
+
+	@Override
+	public List<Property<?>> getProperties() {
+		TextProperty captionProp = new TextProperty();
+		captionProp.setKey("Caption");
+		properties.add(captionProp);
+
+		TextProperty backColorProp = new TextProperty();
+		backColorProp.setKey("Background Color");
+		properties.add(backColorProp);
+
+		return properties;
+	}
+
 }

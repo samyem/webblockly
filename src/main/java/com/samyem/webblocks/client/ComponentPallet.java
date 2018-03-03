@@ -7,7 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.pallet.ButtonPalletItem;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.LabelPalletItem;
@@ -27,12 +26,12 @@ public class ComponentPallet extends VerticalPanel {
 	private int docTop;
 
 	public ComponentPallet() {
-		addItem("text", new LabelPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
-		addItem("button", new ButtonPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
+		addItem(new LabelPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
+		addItem(new ButtonPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 	}
 
-	public Widget createWidgetForItem(String item) {
-		return palletItemsByName.get(item).createWidget();
+	public ComponentPalletItem createPalletItem(String item) {
+		return palletItemsByName.get(item);
 	}
 
 	public void handleDocumentCanvasClick(ClickEvent event) {
@@ -43,7 +42,8 @@ public class ComponentPallet extends VerticalPanel {
 		}
 	}
 
-	private void addItem(String key, ComponentPalletItem componentItem) {
+	private void addItem(ComponentPalletItem componentItem) {
+		String key = componentItem.getKey();
 		String icon = "icons/pallet-" + key + ".png";
 		palletItemsByName.put(key, componentItem);
 

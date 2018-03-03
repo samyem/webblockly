@@ -54,17 +54,9 @@
 						       	</g:ScrollPanel>
 		       				</g:center>
 		       				
-					       <g:east size='200'>
-							 <g:Grid ui:field="propertyGrid">
-							  <g:row styleName="optionalHeaderStyle">
-							    <g:customCell>
-							      <g:Label>Property</g:Label>
-							    </g:customCell>
-							    <g:customCell>
-							      <g:Label>Value</g:Label>
-							    </g:customCell>
-							  </g:row>
-							 </g:Grid>
+					       <g:east size='250'>
+							 <g:FlexTable ui:field="propertyGrid">
+							 </g:FlexTable>
 					       </g:east>     
 		       				
 		     			</g:SplitLayoutPanel>

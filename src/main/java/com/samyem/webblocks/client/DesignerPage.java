@@ -1,5 +1,7 @@
 package com.samyem.webblocks.client;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -7,12 +9,15 @@ import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.samyem.webblocks.client.pallet.ComponentPalletItem;
+import com.samyem.webblocks.client.pallet.Property;
 
 public class DesignerPage extends Composite {
 	private static DesignerPageUiBinder uiBinder = GWT.create(DesignerPageUiBinder.class);
@@ -33,7 +38,9 @@ public class DesignerPage extends Composite {
 	ComponentPallet pallet;
 
 	@UiField
-	Grid propertyGrid;
+	FlexTable propertyGrid;
+
+	private Element lastSelectedElement;
 
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -52,6 +59,9 @@ public class DesignerPage extends Composite {
 			handleClick(event);
 
 		}, ClickEvent.getType());
+
+		propertyGrid.setText(0, 0, "Property");
+		propertyGrid.setText(0, 1, "Value");
 	}
 
 	private void handleClick(ClickEvent event) {
@@ -81,10 +91,37 @@ public class DesignerPage extends Composite {
 		int x = nativeEvent.getClientX() - docLeft;
 		int y = nativeEvent.getClientY() - docTop;
 
-		Widget widget = pallet.createWidgetForItem(item);
+		ComponentPalletItem palletItem = pallet.createPalletItem(item);
+		Widget widget = palletItem.createWidget();
 		widget.setStyleName("docElement");
 		docPanel.add(widget, x, y);
 
+		List<Property<?>> props = palletItem.getProperties();
+		applyProperties(props, widget);
+
+		widget.addDomHandler((e) -> {
+			applyProperties(props, widget);
+
+		}, ClickEvent.getType());
+
 		GWT.log(x + "," + y);
+	}
+
+	public void applyProperties(List<Property<?>> props, Widget widget) {
+		int row = 1;
+		for (Property<?> prop : props) {
+			propertyGrid.setText(row, 0, prop.getKey());
+			propertyGrid.setWidget(row, 1, prop.getValueEditor());
+			row++;
+		}
+
+		Element selectedElement = widget.getElement();
+		selectedElement.addClassName("selected");
+
+		if (lastSelectedElement != null && lastSelectedElement != selectedElement) {
+			lastSelectedElement.removeClassName("selected");
+		}
+		lastSelectedElement = selectedElement;
+
 	}
 }
