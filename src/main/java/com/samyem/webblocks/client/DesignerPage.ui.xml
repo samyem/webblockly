@@ -17,7 +17,7 @@
 	<g:SplitLayoutPanel>
 	      <g:center>				
 		     <g:DockLayoutPanel unit='EM'>
-		       <g:north size='2'>
+		       <g:north size='4'>
 		         <g:FlowPanel >
 					<g:MenuBar animationEnabled="true" autoOpen="true">
 						<g:MenuItem text="File">
@@ -41,8 +41,8 @@
 						</g:MenuItem>
 						<g:MenuItem text="Project">
 							<g:MenuBar vertical="true">
-								<g:MenuItem text="Run (F5)" />
-								<g:MenuItem text="Configure"/>
+								<g:MenuItem text="Run (F5)" ui:field="mnuRun" />
+								<g:MenuItem text="Configure" ui:field="mnuConfig" />
 							</g:MenuBar>							
 						</g:MenuItem>
 						<g:MenuItem text="Help"/>							
@@ -86,7 +86,9 @@
 		</g:center>
 		<g:south size="100">
 	        <g:FlowPanel styleName="{style.southPanel}">
-	          <g:Label>Console</g:Label>
+	        	<g:HTMLPanel>
+	        		<pre ui:field="console">Console Ready</pre>
+	        	</g:HTMLPanel>
 	        </g:FlowPanel>
 		</g:south>
 	</g:SplitLayoutPanel>

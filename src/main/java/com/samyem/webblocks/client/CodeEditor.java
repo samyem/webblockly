@@ -1,6 +1,7 @@
 package com.samyem.webblocks.client;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
@@ -13,6 +14,8 @@ import com.google.gwt.user.client.ui.ResizeLayoutPanel;
  */
 public class CodeEditor extends ResizeLayoutPanel {
 	private boolean initialized = false;
+
+	private JavaScriptObject workspace;
 
 	public CodeEditor() {
 
@@ -40,8 +43,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 			return;
 		}
 
-		// setWidth("100%");
-		// setHeight("500px");
+		GWT.log("change test");
 
 		Timer timer = new Timer() {
 
@@ -51,7 +53,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 
 				GWT.log("H:" + element.getClientHeight() + ", " + element.getClientWidth());
 
-				createBlockly(element);
+				workspace = createBlockly(element);
 				clear();
 			}
 		};
@@ -60,14 +62,38 @@ public class CodeEditor extends ResizeLayoutPanel {
 		initialized = true;
 	}
 
-	private native void createBlockly(Element element) /*-{
-														$wnd.console.log(element);
-														
-														var toolBox = $wnd.document.getElementById('toolbox');
-														$wnd.console.log();
-														
-														var workspacePlayground = $wnd.Blockly.inject("codeEditor", {
-														toolbox : toolBox
-														});
-														}-*/;
+	public void run() {
+		DesignerPage.clearConsole();
+		String code = getCode(workspace);
+		GWT.log(code);
+		eval(code);
+	}
+
+	public static native void eval(String js)/*-{
+		$wnd.eval(js);
+	}-*/;
+
+	private native String getCode(JavaScriptObject workspace) /*-{
+		var code = $wnd.Blockly.JavaScript.workspaceToCode(workspace);
+		return code;
+	}-*/;
+
+	private native JavaScriptObject createBlockly(Element element) /*-{
+		var toolBox = $wnd.document.getElementById('toolbox');
+
+		var workspace = $wnd.Blockly.inject("codeEditor", {
+			toolbox : toolBox,
+			zoom : {
+				controls : true,
+				wheel : true,
+				startScale : 1.0,
+				maxScale : 3,
+				minScale : 0.3,
+				scaleSpeed : 1.2
+			},
+			trashcan : true
+		});
+
+		return workspace;
+	}-*/;
 }

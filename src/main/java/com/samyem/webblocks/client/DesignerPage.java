@@ -4,17 +4,22 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.PreElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DropEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,10 +53,19 @@ public class DesignerPage extends Composite {
 	@UiField
 	TabLayoutPanel tabs;
 
+	@UiField
+	MenuItem mnuRun;
+
+	@UiField
+	PreElement console;
+
 	private Element lastSelectedElement;
+
+	private static DesignerPage me;
 
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
+		me = this;
 
 		documentCanvas.addDomHandler(event -> {
 		}, DragOverEvent.getType());
@@ -70,11 +84,32 @@ public class DesignerPage extends Composite {
 
 		initializeCodeEditor();
 		initializePropertyEditor();
+
+		// menus
+		setupMenus();
+
+		console.setId("console");
+	}
+
+	private void setupMenus() {
+		// run command
+		mnuRun.setScheduledCommand(() -> codeEditor.run());
+
+		Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
+			public void onPreviewNativeEvent(NativePreviewEvent event) {
+				NativeEvent ne = event.getNativeEvent();
+
+				if (ne.getKeyCode() == KeyCodes.KEY_F5) {
+					codeEditor.run();
+					event.cancel();
+				}
+			}
+		});
 	}
 
 	private void initializePropertyEditor() {
-		propertyGrid.setText(0, 0, "Property");
-		propertyGrid.setText(0, 1, "Value");
+		propertyGrid.setText(0, 0, "Properties");
+		propertyGrid.setText(0, 1, "Values");
 	}
 
 	private void initializeCodeEditor() {
@@ -150,5 +185,16 @@ public class DesignerPage extends Composite {
 		}
 		lastSelectedElement = selectedElement;
 
+	}
+
+	public static void printToConsole(String object) {
+		String str = object == null ? "null" : object;
+		str = str + "\n";
+		PreElement console = me.console;
+		console.setInnerText(console.getInnerText() + str);
+	}
+
+	public static void clearConsole() {
+		me.console.setInnerText("");
 	}
 }

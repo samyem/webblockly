@@ -27,6 +27,10 @@ public abstract class ComponentPalletItem {
 		this.consumerOfThis = consumerOfThis;
 		this.docTop = docTop;
 		this.docLeft = docLeft;
+
+		TextProperty nameProp = new TextProperty();
+		nameProp.setKey("Name");
+		properties.add(nameProp);
 	}
 
 	public abstract String getKey();

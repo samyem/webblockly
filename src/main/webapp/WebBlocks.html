@@ -4,10 +4,15 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="WebBlocks.css">
 <title>WebBlocks</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script src="webblocks/webblocks.nocache.js"></script>
 
 <script src="js/blockly_compressed.js"></script>
 <script src="js/blocks_compressed.js"></script>
+<script src="js/javascript_compressed.js"></script>
+<script src="js/custom_blocks.js"></script>
 <script src="js/msg/js/en.js"></script>
 </head>
 <body>
@@ -15,13 +20,131 @@
 	<div id="app"></div>
 	
 	<xml id="toolbox" style="display: none">
-	  <block type="controls_if"></block>
-	  <block type="controls_repeat_ext"></block>
-	  <block type="logic_compare"></block>
-	  <block type="math_number"></block>
-	  <block type="math_arithmetic"></block>
-	  <block type="text"></block>
-	  <block type="text_print"></block>
+		<category name="Core" colour="215">	
+			<category name="Control" colour="210">
+				<block type="controls_if"></block>
+		     	<block type="controls_if">
+		          <mutation else="1"></mutation>
+		        </block>			  
+			</category>
+			<category name="Logic" colour="120">
+		      	<block type="logic_compare"></block>
+		        <block type="logic_operation"></block>
+		        <block type="logic_negate"></block>
+		        <block type="logic_boolean"></block>
+		        <block type="logic_null"></block>
+		        <block type="logic_ternary"></block>
+        	</category>
+
+			<category name="Loops">
+			  <block type="controls_repeat_ext">
+			    <value name="TIMES">
+			      <block type="math_number">
+			        <field name="NUM">10</field>
+			      </block>
+			    </value>
+			  </block>
+			  <block type="controls_whileUntil"></block>
+			  <block type="controls_for">
+			    <field name="VAR">i</field>
+			    <value name="FROM">
+			      <block type="math_number">
+			        <field name="NUM">1</field>
+			      </block>
+			    </value>
+			    <value name="TO">
+			      <block type="math_number">
+			        <field name="NUM">10</field>
+			      </block>
+			    </value>
+			    <value name="BY">
+			      <block type="math_number">
+			        <field name="NUM">1</field>
+			      </block>
+			    </value>
+			  </block>
+			  <block type="controls_forEach"></block>
+			  <block type="controls_flow_statements"></block>
+			</category>
+
+		    <category name="Color" colour="130">
+		      <block type="colour_picker"></block>
+		      <block type="colour_random"></block>
+		      <block type="colour_rgb"></block>
+		      <block type="colour_blend"></block>
+			</category>
+
+		    <category name="Math" colour="230">
+		      <block type="math_number"></block>
+		      <block type="math_arithmetic"></block>
+		      <block type="math_single"></block>
+		      <block type="math_trig"></block>
+		      <block type="math_constant"></block>
+		      <block type="math_number_property"></block>
+		      <block type="math_round"></block>
+		      <block type="math_on_list"></block>
+		      <block type="math_change"></block>		      
+		      <block type="math_modulo"></block>
+		      <block type="math_random_int"></block>		      
+		      <block type="math_constrain">
+		        <value name="LOW">
+		          <block type="math_number">
+		            <field name="NUM">1</field>
+		          </block>
+		        </value>
+		        <value name="HIGH">
+		          <block type="math_number">
+		            <field name="NUM">100</field>
+		          </block>
+		        </value>
+		      </block>
+		      <block type="math_random_int">
+		        <value name="FROM">
+		          <block type="math_number">
+		            <field name="NUM">1</field>
+		          </block>
+		        </value>
+		        <value name="TO">
+		          <block type="math_number">
+		            <field name="NUM">100</field>
+		          </block>
+		        </value>
+		      </block>
+		      <block type="math_random_float"></block>
+		    </category>
+
+		    <category name="Lists" colour="250">
+		      <block type="lists_create_empty"></block>
+		      <block type="lists_create_with"></block>
+		      <block type="lists_repeat">
+		        <value name="NUM">
+		          <block type="math_number">
+		            <field name="NUM">5</field>
+		          </block>
+		        </value>
+		      </block>
+		      <block type="lists_length"></block>
+		      <block type="lists_isEmpty"></block>
+		      <block type="lists_indexOf"></block>
+		      <block type="lists_getIndex"></block>
+		      <block type="lists_setIndex"></block>
+		    </category>
+        	
+	    	<category name="Text" colour="20">
+			  <block type="text"></block>
+			  <block type="text_console_print"></block>
+			  <block type="text_join"></block>
+			  <block type="text_append"></block>
+			  <block type="text_length"></block>
+			  <block type="text_indexOf"></block>
+			  <block type="text_charAt"></block>
+	    	</category>
+		</category>
+		<category name="Interface" colour="235">
+		</category>	
+		<sep></sep>		    	
+		<category name="Variables" custom="VARIABLE" colour="330" ></category>
+		<category name="Functions" custom="PROCEDURE" colour="290" ></category>
 	</xml>
 	
 </body>

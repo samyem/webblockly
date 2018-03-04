@@ -6,12 +6,16 @@
   margin: 5px;
 }
 
+.gwt-MenuBarPopup{
+	z-index: 100;
+}
+
 .docElement {
 	cursor: move;	
 }
 
 .docElement.selected {
-	border: thin dashed deepskyblue;
+	border: 2px dashed deepskyblue;
 	box-shadow: 0 0 5px 2px yellow; 
 }
 
