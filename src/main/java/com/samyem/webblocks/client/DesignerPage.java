@@ -194,6 +194,10 @@ public class DesignerPage extends Composite {
 		console.setInnerText(console.getInnerText() + str);
 	}
 
+	public static void fromJava(String arg) {
+		GWT.log("From java " + arg);
+	}
+
 	public static void clearConsole() {
 		me.console.setInnerText("");
 	}

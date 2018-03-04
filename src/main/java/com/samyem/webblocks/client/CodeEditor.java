@@ -36,6 +36,8 @@ public class CodeEditor extends ResizeLayoutPanel {
 				initializeUI();
 			}
 		});
+
+		registerJNSICalls();
 	}
 
 	public void initializeUI() {
@@ -96,4 +98,15 @@ public class CodeEditor extends ResizeLayoutPanel {
 
 		return workspace;
 	}-*/;
+
+	/**
+	 * Register JNSI callable GWT code as parsed eval because Direct calls are not
+	 * possible in eval strings.
+	 */
+	private native void registerJNSICalls() /*-{
+		$wnd.fromJava = function(arg) {
+			$entry(@com.samyem.webblocks.client.DesignerPage::fromJava(Ljava/lang/String;)(arg))
+		}
+	}-*/;
+
 }
