@@ -7,7 +7,8 @@ import java.util.function.Supplier;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
-import com.samyem.webblocks.shared.AppObject;
+import com.samyem.webblocks.client.WidgetAppObject;
+import com.samyem.webblocks.client.pallet.Property.PropertyApplier;
 
 /**
  * Base pallet item
@@ -20,7 +21,7 @@ public abstract class ComponentPalletItem {
 
 	protected Supplier<Integer> docLeft, docTop;
 
-	protected List<Property<?>> properties = new ArrayList<>();
+	protected List<Property<?, ? extends Widget>> properties = new ArrayList<>();
 
 	public ComponentPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
@@ -28,24 +29,29 @@ public abstract class ComponentPalletItem {
 		this.docTop = docTop;
 		this.docLeft = docLeft;
 
-		TextProperty nameProp = new TextProperty();
+		PropertyApplier<String, Widget> idApplier = (w, value) -> w.getWidget().getElement().setId(value);
+		TextProperty<Widget> nameProp = new TextProperty<>(idApplier);
 		nameProp.setKey("Name");
 		properties.add(nameProp);
 	}
 
+	/**
+	 * Key to identify this type of item
+	 * 
+	 * @return
+	 */
 	public abstract String getKey();
 
-	public abstract Widget createWidget();
-
-	public AppObject createAppObject() {
-		AppObject obj = new AppObject();
-		obj.setCode(getKey());
-		return obj;
-	}
+	/**
+	 * An app object that has a widget attached to it
+	 * 
+	 * @return
+	 */
+	public abstract WidgetAppObject<? extends Widget> createAppObject();
 
 	public abstract void handleDocumentCanvasClick(ClickEvent event);
 
-	public List<Property<?>> getProperties() {
+	public List<Property<?, ? extends Widget>> getProperties() {
 		return properties;
 	}
 }

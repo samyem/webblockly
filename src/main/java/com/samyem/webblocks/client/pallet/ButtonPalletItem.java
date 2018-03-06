@@ -13,8 +13,7 @@ import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Widget;
-import com.samyem.webblocks.shared.AppObject;
+import com.samyem.webblocks.client.WidgetAppObject;
 
 /**
  * Item that creates new labels
@@ -28,19 +27,28 @@ public class ButtonPalletItem extends ComponentPalletItem {
 	public ButtonPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
-		
-		TextProperty captionProp = new TextProperty();
+
+		TextProperty<Button> captionProp = new TextProperty<>((w, value) -> w.getWidget().setText(value));
 		captionProp.setKey("Caption");
 		properties.add(captionProp);
 
-		TextProperty backColorProp = new TextProperty();
+		TextProperty<Button> backColorProp = new TextProperty<>(
+				(w, value) -> w.getWidget().getElement().getStyle().setBackgroundColor(value));
 		backColorProp.setKey("Background Color");
-		properties.add(backColorProp);		
+		properties.add(backColorProp);
 	}
 
-	public Widget createWidget() {
-		Button button = new Button("Button");
+	@Override
+	public void handleDocumentCanvasClick(ClickEvent event) {
+		if (currentButton != null) {
+			currentButton.getElement().setAttribute("contenteditable", "false");
+			currentButton = null;
+		}
+	}
 
+	@Override
+	public WidgetAppObject<Button> createAppObject() {
+		Button button = new Button("Button");
 		button.addKeyUpHandler(event -> event.preventDefault());
 
 		button.addDoubleClickHandler(e -> {
@@ -77,27 +85,14 @@ public class ButtonPalletItem extends ComponentPalletItem {
 				style.setLeft(x, Unit.PX);
 			}
 		});
-		return button;
-	}
 
-	@Override
-	public void handleDocumentCanvasClick(ClickEvent event) {
-		if (currentButton != null) {
-			currentButton.getElement().setAttribute("contenteditable", "false");
-			currentButton = null;
-		}
-	}
-
-	@Override
-	public AppObject createAppObject() {
-		AppObject obj = super.createAppObject();
-		return obj;
+		WidgetAppObject<Button> wAppObj = new WidgetAppObject<>(button);
+		return wAppObj;
 	}
 
 	@Override
 	public String getKey() {
 		return "button";
 	}
-
 
 }

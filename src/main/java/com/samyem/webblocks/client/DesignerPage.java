@@ -154,37 +154,40 @@ public class DesignerPage extends Composite {
 		int y = nativeEvent.getClientY() - docTop;
 
 		ComponentPalletItem palletItem = pallet.createPalletItem(item);
-		Widget widget = palletItem.createWidget();
+		WidgetAppObject<? extends Widget> widgetObj = palletItem.createAppObject();
+		Widget widget = widgetObj.getWidget();
 		widget.setStyleName("docElement");
 		docPanel.add(widget, x, y);
 
-		List<Property<?>> props = palletItem.getProperties();
-		applyProperties(props, widget);
+		List<Property<?, ? extends Widget>> props = palletItem.getProperties();
+		applyProperties(props, widgetObj);
 
-		widget.addDomHandler((e) -> {
-			applyProperties(props, widget);
-
-		}, ClickEvent.getType());
+		widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
 
 		GWT.log(x + "," + y);
 	}
 
-	public void applyProperties(List<Property<?>> props, Widget widget) {
+	@SuppressWarnings("unchecked")
+	public void applyProperties(List<Property<?, ? extends Widget>> props, WidgetAppObject<? extends Widget> widget) {
+		propertyGrid.clear();
+		initializePropertyEditor();
+
 		int row = 1;
-		for (Property<?> prop : props) {
+		for (@SuppressWarnings("rawtypes")
+		Property prop : props) {
 			propertyGrid.setText(row, 0, prop.getKey());
-			propertyGrid.setWidget(row, 1, prop.getValueEditor());
+			propertyGrid.setWidget(row, 1, prop.getValueEditor(widget));
 			row++;
 		}
 
-		Element selectedElement = widget.getElement();
+		// mark element as selected
+		Element selectedElement = widget.getWidget().getElement();
 		selectedElement.addClassName("selected");
 
 		if (lastSelectedElement != null && lastSelectedElement != selectedElement) {
 			lastSelectedElement.removeClassName("selected");
 		}
 		lastSelectedElement = selectedElement;
-
 	}
 
 	public static void printToConsole(String object) {

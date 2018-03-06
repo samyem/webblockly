@@ -14,8 +14,7 @@ import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-import com.samyem.webblocks.shared.AppObject;
+import com.samyem.webblocks.client.WidgetAppObject;
 
 /**
  * Item that creates new labels
@@ -29,17 +28,19 @@ public class LabelPalletItem extends ComponentPalletItem {
 	public LabelPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
-		
-		TextProperty textProp = new TextProperty();
+
+		TextProperty<Label> textProp = new TextProperty<>((w, value) -> w.getWidget().setText(value));
 		textProp.setKey("Text");
 		properties.add(textProp);
 
-		TextProperty colorProp = new TextProperty();
+		TextProperty<Label> colorProp = new TextProperty<>(
+				(w, value) -> w.getWidget().getElement().getStyle().setColor(value));
 		colorProp.setKey("Color");
-		properties.add(colorProp);		
+		properties.add(colorProp);
 	}
 
-	public Widget createWidget() {
+	@Override
+	public WidgetAppObject<Label> createAppObject() {
 		Label label = new Label("Text");
 
 		label.addDoubleClickHandler(e -> {
@@ -77,7 +78,9 @@ public class LabelPalletItem extends ComponentPalletItem {
 				style.setLeft(x, Unit.PX);
 			}
 		});
-		return label;
+
+		WidgetAppObject<Label> appObj = new WidgetAppObject<>(label);
+		return appObj;
 	}
 
 	@Override
@@ -91,12 +94,6 @@ public class LabelPalletItem extends ComponentPalletItem {
 	@Override
 	public String getKey() {
 		return "label";
-	}
-
-	@Override
-	public AppObject createAppObject() {
-		AppObject obj = super.createAppObject();
-		return obj;
 	}
 
 }
