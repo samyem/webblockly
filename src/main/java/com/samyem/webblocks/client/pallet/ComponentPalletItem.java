@@ -2,10 +2,12 @@ package com.samyem.webblocks.client.pallet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.WidgetAppObject;
@@ -33,9 +35,18 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		PropertyApplier<String, W> idApplier = (w, value) -> w.getWidget().getElement().setId(value);
 		Function<WidgetAppObject<W>, String> propInitializer = t -> t.getWidget().getElement().getId();
 
-		TextProperty<W> nameProp = new TextProperty<>(idApplier, propInitializer);
-		nameProp.setKey("Name");
+		TextProperty<W> nameProp = new TextProperty<>("Name", idApplier, propInitializer);
 		properties.add(nameProp);
+	}
+
+	protected void addStyleProp(String property, Function<Style, String> styleGetter,
+			BiConsumer<Style, String> styleSetter) {
+		Function<WidgetAppObject<W>, String> propInitializer = t -> styleGetter
+				.apply(t.getWidget().getElement().getStyle());
+		PropertyApplier<String, W> propApplier = (w, value) -> styleSetter.accept(w.getWidget().getElement().getStyle(),
+				value);
+		TextProperty<W> prop = new TextProperty<>(property, propApplier, propInitializer);
+		properties.add(prop);
 	}
 
 	/**

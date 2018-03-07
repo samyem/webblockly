@@ -8,6 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DragEndEvent;
@@ -31,27 +32,19 @@ public class LabelPalletItem extends ComponentPalletItem<Label> {
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
 
-		addColor();
 		addText();
+
+		addStyleProp("Color", Style::getColor, Style::setColor);
+		addStyleProp("Background Color", Style::getBackgroundColor, Style::setBackgroundColor);
+		addStyleProp("Font Size", Style::getFontSize, (s, v) -> s.setFontSize(Double.parseDouble(v), Unit.PX));
+		addStyleProp("Font Style", Style::getFontStyle, (s, v) -> s.setFontStyle(FontStyle.valueOf(v)));
 	}
 
 	private void addText() {
 		PropertyApplier<String, Label> propApplier = (w, value) -> w.getWidget().setText(value);
 		Function<WidgetAppObject<Label>, String> propInitializer = t -> t.getWidget().getText();
-		TextProperty<Label> captionProp = new TextProperty<>(propApplier, propInitializer);
-		captionProp.setKey("Text");
+		TextProperty<Label> captionProp = new TextProperty<>("Text", propApplier, propInitializer);
 		properties.add(captionProp);
-	}
-
-	private void addColor() {
-		Function<WidgetAppObject<Label>, String> propInitializer = t -> t.getWidget().getElement().getStyle()
-				.getColor();
-		PropertyApplier<String, Label> propApplier = (w, value) -> w.getWidget().getElement().getStyle()
-				.setColor(value);
-
-		TextProperty<Label> prop = new TextProperty<>(propApplier, propInitializer);
-		prop.setKey("Color");
-		properties.add(prop);
 	}
 
 	@Override

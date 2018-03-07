@@ -8,8 +8,9 @@ import com.samyem.webblocks.client.WidgetAppObject;
 
 public class TextProperty<W extends Widget> extends Property<String, W> {
 
-	public TextProperty(PropertyApplier<String, W> propApplier, Function<WidgetAppObject<W>, String> propInitializer) {
-		super(propApplier, propInitializer);
+	public TextProperty(String key, PropertyApplier<String, W> propApplier,
+			Function<WidgetAppObject<W>, String> propInitializer) {
+		super(key, propApplier, propInitializer);
 	}
 
 	@Override

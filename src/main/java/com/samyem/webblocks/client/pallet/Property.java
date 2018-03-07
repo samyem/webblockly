@@ -32,7 +32,8 @@ public abstract class Property<T, W extends Widget> {
 	 */
 	protected Function<WidgetAppObject<W>, T> propExtractor;
 
-	public Property(PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer) {
+	public Property(String key, PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer) {
+		this.key = key;
 		this.propApplier = propApplier;
 		this.propExtractor = propInitializer;
 	}

@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.FontStyle;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DragEndEvent;
@@ -32,25 +33,18 @@ public class ButtonPalletItem extends ComponentPalletItem<Button> {
 
 		// properties
 		addText();
-		addBgColor();
+
+		addStyleProp("Color", Style::getColor, Style::setColor);
+		addStyleProp("Background Color", Style::getBackgroundColor, Style::setBackgroundColor);
+		addStyleProp("Font Size", Style::getFontSize, (s, v) -> s.setFontSize(Double.parseDouble(v), Unit.PX));
+		addStyleProp("Font Style", Style::getFontStyle, (s, v) -> s.setFontStyle(FontStyle.valueOf(v)));
 	}
 
 	private void addText() {
 		PropertyApplier<String, Button> propApplier = (w, value) -> w.getWidget().setText(value);
 		Function<WidgetAppObject<Button>, String> propInitializer = t -> t.getWidget().getText();
-		TextProperty<Button> captionProp = new TextProperty<>(propApplier, propInitializer);
-		captionProp.setKey("Text");
+		TextProperty<Button> captionProp = new TextProperty<>("Text", propApplier, propInitializer);
 		properties.add(captionProp);
-	}
-
-	private void addBgColor() {
-		PropertyApplier<String, Button> propApplier = (w, value) -> w.getWidget().getElement().getStyle()
-				.setBackgroundColor(value);
-		Function<WidgetAppObject<Button>, String> propInitializer = t -> t.getWidget().getElement().getStyle()
-				.getBackgroundColor();
-		TextProperty<Button> prop = new TextProperty<>(propApplier, propInitializer);
-		prop.setKey("Background Color");
-		properties.add(prop);
 	}
 
 	@Override
