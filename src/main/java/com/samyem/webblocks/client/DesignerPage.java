@@ -176,7 +176,7 @@ public class DesignerPage extends Composite {
 		for (@SuppressWarnings("rawtypes")
 		Property prop : props) {
 			propertyGrid.setText(row, 0, prop.getKey());
-			propertyGrid.setWidget(row, 1, prop.getValueEditor(widget));
+			propertyGrid.setWidget(row, 1, prop.createValueEditor(widget));
 			row++;
 		}
 

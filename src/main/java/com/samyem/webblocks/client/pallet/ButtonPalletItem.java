@@ -1,6 +1,7 @@
 package com.samyem.webblocks.client.pallet;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.gwt.dom.client.Element;
@@ -14,6 +15,7 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.samyem.webblocks.client.WidgetAppObject;
+import com.samyem.webblocks.client.pallet.Property.PropertyApplier;
 
 /**
  * Item that creates new labels
@@ -21,21 +23,34 @@ import com.samyem.webblocks.client.WidgetAppObject;
  * @author samyem
  *
  */
-public class ButtonPalletItem extends ComponentPalletItem {
+public class ButtonPalletItem extends ComponentPalletItem<Button> {
 	private Button currentButton;
 
-	public ButtonPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
+	public ButtonPalletItem(Consumer<ComponentPalletItem<Button>> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
 
-		TextProperty<Button> captionProp = new TextProperty<>((w, value) -> w.getWidget().setText(value));
-		captionProp.setKey("Caption");
-		properties.add(captionProp);
+		// properties
+		addText();
+		addBgColor();
+	}
 
-		TextProperty<Button> backColorProp = new TextProperty<>(
-				(w, value) -> w.getWidget().getElement().getStyle().setBackgroundColor(value));
-		backColorProp.setKey("Background Color");
-		properties.add(backColorProp);
+	private void addText() {
+		PropertyApplier<String, Button> propApplier = (w, value) -> w.getWidget().setText(value);
+		Function<WidgetAppObject<Button>, String> propInitializer = t -> t.getWidget().getText();
+		TextProperty<Button> captionProp = new TextProperty<>(propApplier, propInitializer);
+		captionProp.setKey("Text");
+		properties.add(captionProp);
+	}
+
+	private void addBgColor() {
+		PropertyApplier<String, Button> propApplier = (w, value) -> w.getWidget().getElement().getStyle()
+				.setBackgroundColor(value);
+		Function<WidgetAppObject<Button>, String> propInitializer = t -> t.getWidget().getElement().getStyle()
+				.getBackgroundColor();
+		TextProperty<Button> prop = new TextProperty<>(propApplier, propInitializer);
+		prop.setKey("Background Color");
+		properties.add(prop);
 	}
 
 	@Override

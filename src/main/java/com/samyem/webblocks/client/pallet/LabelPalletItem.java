@@ -1,6 +1,7 @@
 package com.samyem.webblocks.client.pallet;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import com.google.gwt.core.client.GWT;
@@ -15,6 +16,7 @@ import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Label;
 import com.samyem.webblocks.client.WidgetAppObject;
+import com.samyem.webblocks.client.pallet.Property.PropertyApplier;
 
 /**
  * Item that creates new labels
@@ -22,21 +24,34 @@ import com.samyem.webblocks.client.WidgetAppObject;
  * @author samyem
  *
  */
-public class LabelPalletItem extends ComponentPalletItem {
+public class LabelPalletItem extends ComponentPalletItem<Label> {
 	private Label currentLabel;
 
-	public LabelPalletItem(Consumer<ComponentPalletItem> consumerOfThis, Supplier<Integer> docLeft,
+	public LabelPalletItem(Consumer<ComponentPalletItem<Label>> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		super(consumerOfThis, docLeft, docTop);
 
-		TextProperty<Label> textProp = new TextProperty<>((w, value) -> w.getWidget().setText(value));
-		textProp.setKey("Text");
-		properties.add(textProp);
+		addColor();
+		addText();
+	}
 
-		TextProperty<Label> colorProp = new TextProperty<>(
-				(w, value) -> w.getWidget().getElement().getStyle().setColor(value));
-		colorProp.setKey("Color");
-		properties.add(colorProp);
+	private void addText() {
+		PropertyApplier<String, Label> propApplier = (w, value) -> w.getWidget().setText(value);
+		Function<WidgetAppObject<Label>, String> propInitializer = t -> t.getWidget().getText();
+		TextProperty<Label> captionProp = new TextProperty<>(propApplier, propInitializer);
+		captionProp.setKey("Text");
+		properties.add(captionProp);
+	}
+
+	private void addColor() {
+		Function<WidgetAppObject<Label>, String> propInitializer = t -> t.getWidget().getElement().getStyle()
+				.getColor();
+		PropertyApplier<String, Label> propApplier = (w, value) -> w.getWidget().getElement().getStyle()
+				.setColor(value);
+
+		TextProperty<Label> prop = new TextProperty<>(propApplier, propInitializer);
+		prop.setKey("Color");
+		properties.add(prop);
 	}
 
 	@Override

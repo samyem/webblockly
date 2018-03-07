@@ -1,19 +1,23 @@
 package com.samyem.webblocks.client.pallet;
 
+import java.util.function.Function;
+
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.WidgetAppObject;
 
 public class TextProperty<W extends Widget> extends Property<String, W> {
 
-	public TextProperty(PropertyApplier<String, W> propApplier) {
-		super(propApplier);
+	public TextProperty(PropertyApplier<String, W> propApplier, Function<WidgetAppObject<W>, String> propInitializer) {
+		super(propApplier, propInitializer);
 	}
 
 	@Override
-	public Widget getValueEditor(WidgetAppObject<W> widget) {
+	public Widget createValueEditor(WidgetAppObject<W> widget) {
 		TextBox input = new TextBox();
 		input.addBlurHandler(event -> propApplier.apply(widget, input.getValue()));
+
+		input.setValue(propExtractor.apply(widget));
 		return input;
 	}
 

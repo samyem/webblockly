@@ -1,5 +1,7 @@
 package com.samyem.webblocks.client.pallet;
 
+import java.util.function.Function;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.WidgetAppObject;
 
@@ -20,10 +22,19 @@ public abstract class Property<T, W extends Widget> {
 		void apply(WidgetAppObject<W> widget, T value);
 	}
 
+	/**
+	 * Set the widget with the property
+	 */
 	protected PropertyApplier<T, W> propApplier;
 
-	public Property(PropertyApplier<T, W> propApplier) {
+	/**
+	 * Initialize property with the given widget
+	 */
+	protected Function<WidgetAppObject<W>, T> propExtractor;
+
+	public Property(PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer) {
 		this.propApplier = propApplier;
+		this.propExtractor = propInitializer;
 	}
 
 	/**
@@ -31,7 +42,7 @@ public abstract class Property<T, W extends Widget> {
 	 * 
 	 * @return
 	 */
-	public abstract Widget getValueEditor(WidgetAppObject<W> widget);
+	public abstract Widget createValueEditor(WidgetAppObject<W> widget);
 
 	public abstract String getStringValue();
 
