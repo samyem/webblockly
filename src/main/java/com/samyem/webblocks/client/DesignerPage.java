@@ -39,7 +39,7 @@ public class DesignerPage extends Composite {
 	AbsolutePanel docPanel;
 
 	@UiField
-	ScrollPanel documentCanvas;
+	ScrollPanel documentCanvas, testTab;
 
 	@UiField
 	ComponentPallet pallet;
@@ -49,6 +49,9 @@ public class DesignerPage extends Composite {
 
 	@UiField
 	CodeEditor codeEditor;
+
+	@UiField
+	TestWindow testWindow;
 
 	@UiField
 	TabLayoutPanel tabs;
@@ -89,22 +92,30 @@ public class DesignerPage extends Composite {
 		setupMenus();
 
 		console.setId("console");
+
+		testWindow.setCodeEditor(codeEditor);
 	}
 
 	private void setupMenus() {
 		// run command
-		mnuRun.setScheduledCommand(() -> codeEditor.run());
+		mnuRun.setScheduledCommand(this::runProject);
 
 		Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
 			public void onPreviewNativeEvent(NativePreviewEvent event) {
 				NativeEvent ne = event.getNativeEvent();
 
 				if (ne.getKeyCode() == KeyCodes.KEY_F5) {
-					codeEditor.run();
+					runProject();
 					event.cancel();
 				}
 			}
 		});
+	}
+
+	public void runProject() {
+		testWindow.start(docPanel.getElement());
+
+		tabs.selectTab(testTab);
 	}
 
 	private void initializePropertyEditor() {

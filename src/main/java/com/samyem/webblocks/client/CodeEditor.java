@@ -66,6 +66,11 @@ public class CodeEditor extends ResizeLayoutPanel {
 
 	public void run() {
 		DesignerPage.clearConsole();
+
+		if (workspace == null) {
+			GWT.log("No code defined");
+			return;
+		}
 		String code = getCode(workspace);
 		GWT.log(code);
 		eval(code);
@@ -76,6 +81,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 	}-*/;
 
 	private native String getCode(JavaScriptObject workspace) /*-{
+		console.log(workspace);
 		var code = $wnd.Blockly.JavaScript.workspaceToCode(workspace);
 		return code;
 	}-*/;

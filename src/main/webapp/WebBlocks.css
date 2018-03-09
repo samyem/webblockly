@@ -10,11 +10,11 @@
 	z-index: 100;
 }
 
-.docElement {
+.designArea .docElement {
 	cursor: move;	
 }
 
-.docElement.selected {
+.designArea .docElement.selected {
 	border: 2px dashed deepskyblue;
 	box-shadow: 0 0 5px 2px yellow; 
 }

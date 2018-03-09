@@ -63,7 +63,7 @@
 					         </g:FlowPanel>
 					       </g:west>
 		       				<g:center type="g:SingleChildWidgetType">
-						       	<g:ScrollPanel ui:field="documentCanvas">
+						       	<g:ScrollPanel ui:field="documentCanvas" styleName="designArea">
 						       		<g:AbsolutePanel height="100%" ui:field="docPanel" styleName="{style.docPanel}">
 						       		</g:AbsolutePanel>
 						       	</g:ScrollPanel>
@@ -79,6 +79,14 @@
 		       		<g:tab>
 		       			<g:header>Code</g:header>
 			         	<w:CodeEditor ui:field="codeEditor"></w:CodeEditor>		       			
+		       		</g:tab>
+		       		<g:tab>
+		       			<g:header>Test</g:header>
+				       	<g:ScrollPanel ui:field="testTab">
+				       		<g:AbsolutePanel height="100%" styleName="{style.docPanel}">
+		       					<w:TestWindow ui:field="testWindow"></w:TestWindow>
+				       		</g:AbsolutePanel>
+				       	</g:ScrollPanel>		       			
 		       		</g:tab>
 		       	</g:TabLayoutPanel>
 		       </g:center>
