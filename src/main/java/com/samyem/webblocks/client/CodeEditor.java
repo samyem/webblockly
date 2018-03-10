@@ -72,7 +72,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 			return;
 		}
 		String code = getCode(workspace);
-		GWT.log(code);
+		GWT.log("code is: " + code);
 		eval(code);
 	}
 

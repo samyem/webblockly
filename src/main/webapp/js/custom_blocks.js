@@ -35,7 +35,38 @@ Blockly.Blocks['math_parse_number'] = {
   }
 };
 
-
+Blockly.Blocks['set_property'] = {
+  init: function() {
+    this.jsonInit({
+	  "message0": "For %1 set %2 to %3",
+	  "args0": [
+	    {
+	      "type": "input_value",
+	      "name": "name",
+	      "check": "String",
+	      "value": "Name"
+	    },
+	    {
+	      "type": "input_value",
+	      "name": "property",
+	      "check": "String",
+		  "value": "Text"
+	    },
+	    {
+	      "type": "input_value",
+	      "name": "value",
+	      "check": "String",
+		  "value": "Hello"
+	    }
+	  ],
+	  "previousStatement": null,
+	  "nextStatement": null,
+	  "colour": 270,
+	  "tooltip": "Set property of widget",
+	  "helpUrl": ""
+	});
+	}
+};
 
 Blockly.Blocks['test_call'] = {
   init: function() {
@@ -70,6 +101,14 @@ Blockly.JavaScript['math_parse_number'] = function(block) {
   var strVal = Blockly.JavaScript.valueToCode(block, 'TEXT', Blockly.JavaScript.ORDER_NONE)  || '0';
   var code = "parseFloat("+strVal+")"; 
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];      
+};
+
+Blockly.JavaScript['set_property'] = function(block) {
+	  var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
+	  var value_property = Blockly.JavaScript.valueToCode(block, 'property', Blockly.JavaScript.ORDER_ATOMIC);
+	  var value = Blockly.JavaScript.valueToCode(block, 'value');
+	  var code = generatePropertySetter(eval(value_name),eval(value_property),value) +';\n';
+	  return code;
 };
 
 Blockly.JavaScript['test_call'] = function(block) {

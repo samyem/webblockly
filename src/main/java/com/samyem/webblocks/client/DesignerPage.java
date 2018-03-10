@@ -1,6 +1,8 @@
 package com.samyem.webblocks.client;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
@@ -14,7 +16,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -66,6 +67,13 @@ public class DesignerPage extends Composite {
 
 	private static DesignerPage me;
 
+	/**
+	 * Items in the document by name
+	 */
+	private Map<String, ComponentPalletItem> documentItemsMap = new HashMap<>();
+
+	private Map<String, Integer> countByItemType = new HashMap<>();
+
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
 		me = this;
@@ -80,9 +88,7 @@ public class DesignerPage extends Composite {
 
 		documentCanvas.addDomHandler(event -> {
 			event.preventDefault();
-
 			handleClick(event);
-
 		}, ClickEvent.getType());
 
 		initializeCodeEditor();
@@ -92,22 +98,20 @@ public class DesignerPage extends Composite {
 		setupMenus();
 
 		console.setId("console");
-
 		testWindow.setCodeEditor(codeEditor);
+
+		registerJNSICalls();
 	}
 
 	private void setupMenus() {
 		// run command
 		mnuRun.setScheduledCommand(this::runProject);
 
-		Event.addNativePreviewHandler(new Event.NativePreviewHandler() {
-			public void onPreviewNativeEvent(NativePreviewEvent event) {
-				NativeEvent ne = event.getNativeEvent();
-
-				if (ne.getKeyCode() == KeyCodes.KEY_F5) {
-					runProject();
-					event.cancel();
-				}
+		Event.addNativePreviewHandler(event -> {
+			NativeEvent ne = event.getNativeEvent();
+			if (ne.getType().equals("keyup") && ne.getKeyCode() == KeyCodes.KEY_F2) {
+				runProject();
+				event.cancel();
 			}
 		});
 	}
@@ -169,6 +173,10 @@ public class DesignerPage extends Composite {
 		Widget widget = widgetObj.getWidget();
 		widget.setStyleName("docElement");
 		docPanel.add(widget, x, y);
+		Element element = widget.getElement();
+		String elementId = createUniqueId(palletItem.getKey());
+		element.setId(elementId);
+		documentItemsMap.put(elementId, palletItem);
 
 		List<Property<?, ? extends Widget>> props = palletItem.getProperties();
 		applyProperties(props, widgetObj);
@@ -176,6 +184,13 @@ public class DesignerPage extends Composite {
 		widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
 
 		GWT.log(x + "," + y);
+	}
+
+	private String createUniqueId(String key) {
+		Integer count = countByItemType.get(key);
+		count = count == null ? 1 : count + 1;
+		countByItemType.put(key, count);
+		return key + count;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -215,4 +230,36 @@ public class DesignerPage extends Composite {
 	public static void clearConsole() {
 		me.console.setInnerText("");
 	}
+
+	/**
+	 * Register JNSI callable GWT code as parsed eval because Direct calls are not
+	 * possible in eval strings.
+	 */
+	private native void registerJNSICalls() /*-{
+		$wnd.generatePropertySetter = function(id, prop, val) {
+			return @com.samyem.webblocks.client.DesignerPage::generatePropertySetter(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,prop,val);
+		}
+	}-*/;
+
+	public static String generatePropertySetter(String id, String property, String value) {
+		GWT.log("generatePropertySetter: " + id);
+
+		ComponentPalletItem item = me.documentItemsMap.get(id);
+		String first = me.documentItemsMap.keySet().iterator().next();
+		GWT.log("ID check " + first.equals(id));
+		if (item == null) {
+			GWT.log(me.documentItemsMap.toString());
+			throw new RuntimeException("No object with name of " + id + " found");
+		}
+		String propSetterCode;
+		try {
+			propSetterCode = me.pallet.generatePropertySetter(item.getKey(), property, value);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to set property of " + id + ". " + e.getMessage());
+		}
+
+		String code = "$('.app #" + id + "')." + propSetterCode;
+		return code;
+	}
+
 }

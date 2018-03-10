@@ -84,7 +84,7 @@
 		       			<g:header>Test</g:header>
 				       	<g:ScrollPanel ui:field="testTab">
 				       		<g:AbsolutePanel height="100%" styleName="{style.docPanel}">
-		       					<w:TestWindow ui:field="testWindow"></w:TestWindow>
+		       					<w:TestWindow ui:field="testWindow" styleName="app"></w:TestWindow>
 				       		</g:AbsolutePanel>
 				       	</g:ScrollPanel>		       			
 		       		</g:tab>

@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.samyem.webblocks.client.WidgetAppObject;
 import com.samyem.webblocks.client.pallet.Property.PropertyApplier;
+import com.samyem.webblocks.client.pallet.Property.SetterGenerator;
 
 /**
  * Item that creates new labels
@@ -34,17 +35,19 @@ public class ButtonPalletItem extends ComponentPalletItem<Button> {
 		// properties
 		addText();
 
-		addStyleProp("Color", Style::getColor, Style::setColor);
-		addStyleProp("Background Color", Style::getBackgroundColor, Style::setBackgroundColor);
-		addStyleProp("Font Size", Style::getFontSize, (s, v) -> s.setFontSize(Double.parseDouble(v), Unit.PX));
-		addStyleProp("Font Style", Style::getFontStyle, (s, v) -> s.setFontStyle(FontStyle.valueOf(v)));
+		addStyleProp("Color", Style::getColor, Style::setColor, "color");
+		addStyleProp("Background Color", Style::getBackgroundColor, Style::setBackgroundColor, "background-color");
+		addStyleProp("Font Size", Style::getFontSize, (s, v) -> s.setFontSize(Double.parseDouble(v), Unit.PX),
+				"font-size");
+		addStyleProp("Font Style", Style::getFontStyle, (s, v) -> s.setFontStyle(FontStyle.valueOf(v)), "font-style");
 	}
 
 	private void addText() {
 		PropertyApplier<String, Button> propApplier = (w, value) -> w.getWidget().setText(value);
 		Function<WidgetAppObject<Button>, String> propInitializer = t -> t.getWidget().getText();
-		TextProperty<Button> captionProp = new TextProperty<>("Text", propApplier, propInitializer);
-		properties.add(captionProp);
+		SetterGenerator setterProps = value -> "text('" + value + "')";
+		TextProperty<Button> captionProp = new TextProperty<>("Text", propApplier, propInitializer, setterProps);
+		addProperty(captionProp);
 	}
 
 	@Override

@@ -34,6 +34,14 @@ public class ComponentPallet extends VerticalPanel {
 		return palletItemsByName.get(item);
 	}
 
+	public String generatePropertySetter(String item, String property, String value) throws Exception {
+		try {
+			return palletItemsByName.get(item).generatePropertySetter(property, value);
+		} catch (Exception e) {
+			throw new Exception("Unable to set property for type " + item + ". " + e.getMessage());
+		}
+	}
+
 	public void handleDocumentCanvasClick(ClickEvent event) {
 		if (currentEditFocus != null) {
 			GWT.log("canvas got click");

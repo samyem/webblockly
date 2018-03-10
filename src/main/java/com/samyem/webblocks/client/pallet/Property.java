@@ -22,6 +22,10 @@ public abstract class Property<T, W extends Widget> {
 		void apply(WidgetAppObject<W> widget, T value);
 	}
 
+	public interface SetterGenerator {
+		String apply(String value);
+	}
+
 	/**
 	 * Set the widget with the property
 	 */
@@ -31,11 +35,15 @@ public abstract class Property<T, W extends Widget> {
 	 * Initialize property with the given widget
 	 */
 	protected Function<WidgetAppObject<W>, T> propExtractor;
+	private SetterGenerator setterGenerator;
 
-	public Property(String key, PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer) {
+	public Property(String key, PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer,
+			SetterGenerator setterGenerator) {
 		this.key = key;
 		this.propApplier = propApplier;
 		this.propExtractor = propInitializer;
+
+		this.setterGenerator = setterGenerator;
 	}
 
 	/**
@@ -72,4 +80,9 @@ public abstract class Property<T, W extends Widget> {
 	public void setValue(T value) {
 		this.value = value;
 	}
+
+	public SetterGenerator getSetterGenerator() {
+		return setterGenerator;
+	}
+
 }
