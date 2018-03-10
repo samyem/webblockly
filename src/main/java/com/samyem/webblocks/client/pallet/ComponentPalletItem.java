@@ -63,6 +63,10 @@ public abstract class ComponentPalletItem<W extends Widget> {
 	}
 
 	public String generatePropertySetter(String property, String value) throws Exception {
+		if (property == null || property.isEmpty()) {
+			throw new RuntimeException("No property was selected");
+		}
+
 		Property<?, W> setterGen = propMap.get(property);
 		if (setterGen == null) {
 			GWT.log("Available props are: " + propMap.keySet().toString());

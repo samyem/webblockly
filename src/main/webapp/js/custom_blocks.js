@@ -1,3 +1,27 @@
+// global functions
+function getItemNames() {
+	var items = gwt_getItemNames();
+	console.log(""+items);	
+	return items;
+}
+
+function getPropertiesForId(id) {
+	var props = gwt_getPropertiesForId(id);
+	console.log("final props="+props);
+	return props;
+}
+
+
+function itemChange(id){
+	console.log("itemChange param: "+id);
+	
+	var propInput = this.sourceBlock_.inputList[1];
+	var propOptions = propInput.fieldRow[1];
+	propOptions.getOptions = function(){return gwt_getPropertiesForId(id);}
+}
+
+// blockly defs
+
 Blockly.Blocks['text_console_print'] = {
   init: function() {
     this.jsonInit({
@@ -36,37 +60,28 @@ Blockly.Blocks['math_parse_number'] = {
 };
 
 Blockly.Blocks['set_property'] = {
-  init: function() {
-    this.jsonInit({
-	  "message0": "On %1 set %2 to %3",
-	  "args0": [
-	    {
-	      "type": "input_value",
-	      "name": "name",
-	      "check": "String",
-	      "value": "Name"
-	    },
-	    {
-	      "type": "input_value",
-	      "name": "property",
-	      "check": "String",
-		  "value": "Text"
-	    },
-	    {
-	      "type": "input_value",
-	      "name": "value",
-	      "check": "String",
-		  "value": "Hello"
-	    }
-	  ],
-	  "previousStatement": null,
-	  "nextStatement": null,
-	  "colour": 270,
-	  "tooltip": "Set property of widget",
-	  "helpUrl": ""
-	});
-	}
+		  init: function() {
+		    this.appendValueInput("name")
+		        .setCheck("String")
+		        .appendField("On")
+		        .appendField(new Blockly.FieldDropdown(getItemNames, itemChange),"name");
+
+		    this.appendValueInput("property")
+		    .appendField("set")
+	        .appendField(new Blockly.FieldDropdown([["",""]]),"property");
+		    
+		    this.appendValueInput("value")
+		    .appendField("to")
+	        .setCheck("String");
+		    
+		    this.setPreviousStatement(true, null);
+		    this.setNextStatement(true, null);
+		    this.setColour(270);
+		 this.setTooltip("Set property of widget");
+		 this.setHelpUrl("");
+		 }
 };
+
 
 Blockly.Blocks['test_call'] = {
   init: function() {
@@ -104,10 +119,10 @@ Blockly.JavaScript['math_parse_number'] = function(block) {
 };
 
 Blockly.JavaScript['set_property'] = function(block) {
-	  var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
-	  var value_property = Blockly.JavaScript.valueToCode(block, 'property', Blockly.JavaScript.ORDER_ATOMIC);
+	  var value_name = block.getFieldValue('name');
+	  var value_property = block.getFieldValue('property');
 	  var value = Blockly.JavaScript.valueToCode(block, 'value');
-	  var code = generatePropertySetter(eval(value_name),eval(value_property),value) +';\n';
+	  var code = generatePropertySetter(value_name, value_property, value) +';\n';
 	  return code;
 };
 

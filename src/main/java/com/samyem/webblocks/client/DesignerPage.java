@@ -3,8 +3,11 @@ package com.samyem.webblocks.client;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.PreElement;
 import com.google.gwt.dom.client.Style;
@@ -270,12 +273,72 @@ public class DesignerPage extends Composite {
 	 * possible in eval strings.
 	 */
 	private native void registerJNSICalls() /*-{
-		$wnd.generatePropertySetter = function(id, prop, val) {
-			return @com.samyem.webblocks.client.DesignerPage::generatePropertySetter(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,prop,val);
-		}
+		$wnd.generatePropertySetter = 
+			@com.samyem.webblocks.client.DesignerPage::generatePropertySetter(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+		
+		$wnd.gwt_getItemNames = @com.samyem.webblocks.client.DesignerPage::getItemNames();
+		$wnd.gwt_getPropertiesForId = @com.samyem.webblocks.client.DesignerPage::getPropertiesForId(Ljava/lang/String;);
 	}-*/;
 
+	public static JsArray<JsArrayString> getItemNames() {
+		Set<String> ids = me.documentItemsMap.keySet();
+		JsArray<JsArrayString> items = (JsArray<JsArrayString>) JsArrayString.createArray();
+
+		for (String id : ids) {
+			ComponentPalletItem componentPalletItem = me.documentItemsMap.get(id);
+			JsArrayString item = (JsArrayString) JsArrayString.createArray();
+			items.push(item);
+
+			// id - type
+			item.push(id + " - " + componentPalletItem.getKey());
+			item.push(id);
+		}
+
+		GWT.log("ids:" + items.toString());
+		return items;
+	}
+
+	/**
+	 * Get all applicable properties for the item with given id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static JsArray<JsArrayString> getPropertiesForId(String id) {
+		JsArray<JsArrayString> items = (JsArray<JsArrayString>) JsArrayString.createArray();
+		ComponentPalletItem componentPalletItem = me.documentItemsMap.get(id);
+		List<Property> props = componentPalletItem.getProperties();
+
+		for (Property p : props) {
+			String key = p.getKey();
+
+			// don't let user supplied blockly code change ID of fields to prevent
+			// unexpected behaviour
+			if (key.equals("Name")) {
+				continue;
+			}
+			JsArrayString item = (JsArrayString) JsArrayString.createArray();
+			items.push(item);
+
+			// id - type
+			item.push(key + (p.getDescription() == null ? "" : " - " + p.getDescription()));
+			item.push(key);
+		}
+
+		GWT.log("props for id:" + items.toString());
+		return items;
+	}
+
+	/**
+	 * Generate javascript code necessary to set the property of the given item
+	 * 
+	 * @param id
+	 * @param property
+	 * @param value
+	 * @return
+	 */
 	public static String generatePropertySetter(String id, String property, String value) {
+		GWT.log("generate setter for id : " + id);
 		ComponentPalletItem item = me.documentItemsMap.get(id);
 		if (item == null) {
 			GWT.log(me.documentItemsMap.toString());
@@ -289,6 +352,7 @@ public class DesignerPage extends Composite {
 		}
 
 		String code = "$('.app #" + id + "')." + propSetterCode;
+		GWT.log("generatePropertySetter: " + code);
 		return code;
 	}
 
