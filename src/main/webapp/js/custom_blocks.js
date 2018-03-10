@@ -38,7 +38,7 @@ Blockly.Blocks['math_parse_number'] = {
 Blockly.Blocks['set_property'] = {
   init: function() {
     this.jsonInit({
-	  "message0": "For %1 set %2 to %3",
+	  "message0": "On %1 set %2 to %3",
 	  "args0": [
 	    {
 	      "type": "input_value",

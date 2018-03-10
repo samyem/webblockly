@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
@@ -27,8 +28,8 @@ public abstract class ComponentPalletItem<W extends Widget> {
 
 	protected Supplier<Integer> docLeft, docTop;
 
+	// Don't access these directly - always use addProperty
 	private final List<Property<?, W>> properties = new ArrayList<>();
-
 	private Map<String, Property<?, W>> propMap = new HashMap<>();
 
 	public ComponentPalletItem(Consumer<ComponentPalletItem<W>> consumerOfThis, Supplier<Integer> docLeft,
@@ -41,7 +42,7 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		Function<WidgetAppObject<W>, String> propInitializer = t -> t.getWidget().getElement().getId();
 
 		TextProperty<W> nameProp = new TextProperty<>("Name", idApplier, propInitializer, null);
-		properties.add(nameProp);
+		addProperty(nameProp);
 	}
 
 	protected void addStyleProp(String property, Function<Style, String> styleGetter,
@@ -51,9 +52,9 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		PropertyApplier<String, W> propApplier = (w, value) -> styleSetter.accept(w.getWidget().getElement().getStyle(),
 				value);
 
-		SetterGenerator setterProps = value -> "styleName('" + styleName + "','" + value + "')";
+		SetterGenerator setterProps = value -> "css('" + styleName + "'," + value + ")";
 		TextProperty<W> prop = new TextProperty<>(property, propApplier, propInitializer, setterProps);
-		properties.add(prop);
+		addProperty(prop);
 	}
 
 	protected void addProperty(Property<?, W> prop) {
@@ -64,6 +65,7 @@ public abstract class ComponentPalletItem<W extends Widget> {
 	public String generatePropertySetter(String property, String value) throws Exception {
 		Property<?, W> setterGen = propMap.get(property);
 		if (setterGen == null) {
+			GWT.log("Available props are: " + propMap.keySet().toString());
 			throw new Exception("Invalid property " + property);
 		}
 		SetterGenerator setterGenerator = setterGen.getSetterGenerator();

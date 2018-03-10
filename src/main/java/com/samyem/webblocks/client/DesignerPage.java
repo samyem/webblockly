@@ -7,9 +7,15 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.PreElement;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.DragEndEvent;
+import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DropEvent;
+import com.google.gwt.event.dom.client.HasAllDragAndDropHandlers;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -171,12 +177,11 @@ public class DesignerPage extends Composite {
 		ComponentPalletItem palletItem = pallet.createPalletItem(item);
 		WidgetAppObject<? extends Widget> widgetObj = palletItem.createAppObject();
 		Widget widget = widgetObj.getWidget();
-		widget.setStyleName("docElement");
 		docPanel.add(widget, x, y);
-		Element element = widget.getElement();
+
 		String elementId = createUniqueId(palletItem.getKey());
-		element.setId(elementId);
 		documentItemsMap.put(elementId, palletItem);
+		setupWidget(widget, elementId, docTop, docLeft);
 
 		List<Property<?, ? extends Widget>> props = palletItem.getProperties();
 		applyProperties(props, widgetObj);
@@ -184,6 +189,35 @@ public class DesignerPage extends Composite {
 		widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
 
 		GWT.log(x + "," + y);
+	}
+
+	private void setupWidget(Widget widget, String elementId, int docTop, int docLeft) {
+		widget.setStyleName("docElement");
+		Element element = widget.getElement();
+		element.setId(elementId);
+
+		if (widget instanceof HasClickHandlers) {
+			((HasClickHandlers) widget).addClickHandler(e -> e.stopPropagation());
+		}
+
+		widget.getElement().setDraggable(Element.DRAGGABLE_TRUE);
+
+		if (widget instanceof HasAllDragAndDropHandlers) {
+			HasAllDragAndDropHandlers dragHandler = (HasAllDragAndDropHandlers) widget;
+			dragHandler.addDragStartHandler(e -> e.setData("action", "move"));
+			dragHandler.addDragEndHandler(new DragEndHandler() {
+				@Override
+				public void onDragEnd(DragEndEvent event) {
+					NativeEvent nativeEvent = event.getNativeEvent();
+					int x = nativeEvent.getClientX() - docLeft;
+					int y = nativeEvent.getClientY() - docTop;
+
+					Style style = widget.getElement().getStyle();
+					style.setTop(y, Unit.PX);
+					style.setLeft(x, Unit.PX);
+				}
+			});
+		}
 	}
 
 	private String createUniqueId(String key) {
@@ -242,11 +276,7 @@ public class DesignerPage extends Composite {
 	}-*/;
 
 	public static String generatePropertySetter(String id, String property, String value) {
-		GWT.log("generatePropertySetter: " + id);
-
 		ComponentPalletItem item = me.documentItemsMap.get(id);
-		String first = me.documentItemsMap.keySet().iterator().next();
-		GWT.log("ID check " + first.equals(id));
 		if (item == null) {
 			GWT.log(me.documentItemsMap.toString());
 			throw new RuntimeException("No object with name of " + id + " found");
