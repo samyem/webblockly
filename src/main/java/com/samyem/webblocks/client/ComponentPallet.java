@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.samyem.webblocks.client.pallet.ButtonPalletItem;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.LabelPalletItem;
+import com.samyem.webblocks.client.pallet.TextBoxPalletItem;
 
 /**
  * Component Pallet
@@ -28,6 +29,7 @@ public class ComponentPallet extends VerticalPanel {
 	public ComponentPallet() {
 		addItem(new LabelPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 		addItem(new ButtonPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
+		addItem(new TextBoxPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 	}
 
 	public ComponentPalletItem createPalletItem(String item) {
@@ -38,7 +40,15 @@ public class ComponentPallet extends VerticalPanel {
 		try {
 			return palletItemsByName.get(item).generatePropertySetter(property, value);
 		} catch (Exception e) {
-			throw new Exception("Unable to set property for type " + item + ". " + e.getMessage());
+			throw new Exception("Unable to set property " + property + " for type " + item + ". " + e.getMessage());
+		}
+	}
+
+	public String generatePropertyGetter(String item, String property) throws Exception {
+		try {
+			return palletItemsByName.get(item).generatePropertyGetter(property);
+		} catch (Exception e) {
+			throw new Exception("Unable to get property " + property + " for type " + item + ". " + e.getMessage());
 		}
 	}
 

@@ -275,6 +275,8 @@ public class DesignerPage extends Composite {
 	private native void registerJNSICalls() /*-{
 		$wnd.generatePropertySetter = 
 			@com.samyem.webblocks.client.DesignerPage::generatePropertySetter(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+		$wnd.generatePropertyGetter = 
+			@com.samyem.webblocks.client.DesignerPage::generatePropertyGetter(Ljava/lang/String;Ljava/lang/String;);
 		
 		$wnd.gwt_getItemNames = @com.samyem.webblocks.client.DesignerPage::getItemNames();
 		$wnd.gwt_getPropertiesForId = @com.samyem.webblocks.client.DesignerPage::getPropertiesForId(Ljava/lang/String;);
@@ -306,7 +308,7 @@ public class DesignerPage extends Composite {
 	 */
 	public static JsArray<JsArrayString> getPropertiesForId(String id) {
 		JsArray<JsArrayString> items = (JsArray<JsArrayString>) JsArrayString.createArray();
-		ComponentPalletItem componentPalletItem = me.documentItemsMap.get(id);
+		ComponentPalletItem componentPalletItem = getItemById(id);
 		List<Property> props = componentPalletItem.getProperties();
 
 		for (Property p : props) {
@@ -329,6 +331,14 @@ public class DesignerPage extends Composite {
 		return items;
 	}
 
+	private static ComponentPalletItem getItemById(String id) {
+		ComponentPalletItem item = me.documentItemsMap.get(id);
+		if (item == null) {
+			throw new RuntimeException("No object with name of " + id + " found");
+		}
+		return item;
+	}
+
 	/**
 	 * Generate javascript code necessary to set the property of the given item
 	 * 
@@ -339,11 +349,7 @@ public class DesignerPage extends Composite {
 	 */
 	public static String generatePropertySetter(String id, String property, String value) {
 		GWT.log("generate setter for id : " + id);
-		ComponentPalletItem item = me.documentItemsMap.get(id);
-		if (item == null) {
-			GWT.log(me.documentItemsMap.toString());
-			throw new RuntimeException("No object with name of " + id + " found");
-		}
+		ComponentPalletItem item = getItemById(id);
 		String propSetterCode;
 		try {
 			propSetterCode = me.pallet.generatePropertySetter(item.getKey(), property, value);
@@ -353,6 +359,29 @@ public class DesignerPage extends Composite {
 
 		String code = "$('.app #" + id + "')." + propSetterCode;
 		GWT.log("generatePropertySetter: " + code);
+		return code;
+	}
+
+	/**
+	 * Generate javascript code necessary to set the property of the given item
+	 * 
+	 * @param id
+	 * @param property
+	 * @param value
+	 * @return
+	 */
+	public static String generatePropertyGetter(String id, String property) {
+		GWT.log("generate setter for id : " + id);
+		ComponentPalletItem item = getItemById(id);
+		String propGetterCode;
+		try {
+			propGetterCode = me.pallet.generatePropertyGetter(item.getKey(), property);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to set property of " + id + ". " + e.getMessage());
+		}
+
+		String code = "$('.app #" + id + "')." + propGetterCode;
+		GWT.log("generatePropertyGetter: " + code);
 		return code;
 	}
 

@@ -26,6 +26,10 @@ public abstract class Property<T, W extends Widget> {
 		String apply(String value);
 	}
 
+	public interface GetterGenerator {
+		String apply();
+	}
+
 	/**
 	 * Set the widget with the property
 	 */
@@ -36,14 +40,16 @@ public abstract class Property<T, W extends Widget> {
 	 */
 	protected Function<WidgetAppObject<W>, T> propExtractor;
 	private SetterGenerator setterGenerator;
+	private GetterGenerator getterGenerator;
 
 	public Property(String key, PropertyApplier<T, W> propApplier, Function<WidgetAppObject<W>, T> propInitializer,
-			SetterGenerator setterGenerator) {
+			SetterGenerator setterGenerator, GetterGenerator getterGenerator) {
 		this.key = key;
 		this.propApplier = propApplier;
 		this.propExtractor = propInitializer;
 
 		this.setterGenerator = setterGenerator;
+		this.getterGenerator = getterGenerator;
 	}
 
 	/**
@@ -83,6 +89,10 @@ public abstract class Property<T, W extends Widget> {
 
 	public SetterGenerator getSetterGenerator() {
 		return setterGenerator;
+	}
+
+	public GetterGenerator getGetterGenerator() {
+		return getterGenerator;
 	}
 
 }

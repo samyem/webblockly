@@ -20,6 +20,13 @@ function itemChange(id){
 	propOptions.getOptions = function(){return gwt_getPropertiesForId(id);}
 }
 
+function getInitialProps(){
+	var items = getItemNames();
+	if(items.length>0){
+		return getPropertiesForId(items[0][1]);
+	}
+}
+
 // blockly defs
 
 Blockly.Blocks['text_console_print'] = {
@@ -61,14 +68,13 @@ Blockly.Blocks['math_parse_number'] = {
 
 Blockly.Blocks['set_property'] = {
 		  init: function() {
-		    this.appendValueInput("name")
-		        .setCheck("String")
+		    this.appendDummyInput()
 		        .appendField("On")
 		        .appendField(new Blockly.FieldDropdown(getItemNames, itemChange),"name");
 
-		    this.appendValueInput("property")
+		    this.appendDummyInput()
 		    .appendField("set")
-	        .appendField(new Blockly.FieldDropdown([["",""]]),"property");
+	        .appendField(new Blockly.FieldDropdown(getInitialProps),"property");
 		    
 		    this.appendValueInput("value")
 		    .appendField("to")
@@ -82,6 +88,22 @@ Blockly.Blocks['set_property'] = {
 		 }
 };
 
+Blockly.Blocks['get_property'] = {
+		  init: function() {
+		    this.appendDummyInput()
+		        .appendField("On")
+		        .appendField(new Blockly.FieldDropdown(getItemNames, itemChange),"name");
+
+		    this.appendDummyInput()
+		    .appendField("get") 
+	        .appendField(new Blockly.FieldDropdown(getInitialProps),"property");
+		    
+		    this.setOutput(true, null);
+		    this.setColour(230);
+		 this.setTooltip("Get property of widget");
+		 this.setHelpUrl("");
+		 }
+};
 
 Blockly.Blocks['test_call'] = {
   init: function() {
@@ -115,7 +137,7 @@ Blockly.JavaScript['math_parse_number'] = function(block) {
   // Parse string as numeric value
   var strVal = Blockly.JavaScript.valueToCode(block, 'TEXT', Blockly.JavaScript.ORDER_NONE)  || '0';
   var code = "parseFloat("+strVal+")"; 
-  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];      
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
 
 Blockly.JavaScript['set_property'] = function(block) {
@@ -125,6 +147,14 @@ Blockly.JavaScript['set_property'] = function(block) {
 	  var code = generatePropertySetter(value_name, value_property, value) +';\n';
 	  return code;
 };
+
+Blockly.JavaScript['get_property'] = function(block) {
+	  var value_name = block.getFieldValue('name');
+	  var value_property = block.getFieldValue('property');
+	  var code = generatePropertyGetter(value_name, value_property);
+	  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];;
+};
+
 
 Blockly.JavaScript['test_call'] = function(block) {
   // Print statement into UI console

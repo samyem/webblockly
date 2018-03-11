@@ -14,6 +14,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.WidgetAppObject;
+import com.samyem.webblocks.client.pallet.Property.GetterGenerator;
 import com.samyem.webblocks.client.pallet.Property.PropertyApplier;
 import com.samyem.webblocks.client.pallet.Property.SetterGenerator;
 
@@ -41,7 +42,7 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		PropertyApplier<String, W> idApplier = (w, value) -> w.getWidget().getElement().setId(value);
 		Function<WidgetAppObject<W>, String> propInitializer = t -> t.getWidget().getElement().getId();
 
-		TextProperty<W> nameProp = new TextProperty<>("Name", idApplier, propInitializer, null);
+		TextProperty<W> nameProp = new TextProperty<>("Name", idApplier, propInitializer, null, null);
 		addProperty(nameProp);
 	}
 
@@ -53,7 +54,8 @@ public abstract class ComponentPalletItem<W extends Widget> {
 				value);
 
 		SetterGenerator setterProps = value -> "css('" + styleName + "'," + value + ")";
-		TextProperty<W> prop = new TextProperty<>(property, propApplier, propInitializer, setterProps);
+		GetterGenerator getterProps = () -> "css('" + styleName + "')";
+		TextProperty<W> prop = new TextProperty<>(property, propApplier, propInitializer, setterProps, getterProps);
 		addProperty(prop);
 	}
 
@@ -62,7 +64,25 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		propMap.put(prop.getKey(), prop);
 	}
 
+	public String generatePropertyGetter(String property) throws Exception {
+		Property<?, W> prop = getProperty(property);
+		GetterGenerator getterGenerator = prop.getGetterGenerator();
+		if (getterGenerator == null) {
+			return ";\n";
+		}
+		return getterGenerator.apply();
+	}
+
 	public String generatePropertySetter(String property, String value) throws Exception {
+		Property<?, W> prop = getProperty(property);
+		SetterGenerator setterGenerator = prop.getSetterGenerator();
+		if (setterGenerator == null) {
+			return ";\n";
+		}
+		return setterGenerator.apply(value);
+	}
+
+	private Property<?, W> getProperty(String property) throws Exception {
 		if (property == null || property.isEmpty()) {
 			throw new RuntimeException("No property was selected");
 		}
@@ -72,11 +92,7 @@ public abstract class ComponentPalletItem<W extends Widget> {
 			GWT.log("Available props are: " + propMap.keySet().toString());
 			throw new Exception("Invalid property " + property);
 		}
-		SetterGenerator setterGenerator = setterGen.getSetterGenerator();
-		if (setterGenerator == null) {
-			return ";\n";
-		}
-		return setterGenerator.apply(value);
+		return setterGen;
 	}
 
 	/**
@@ -93,7 +109,14 @@ public abstract class ComponentPalletItem<W extends Widget> {
 	 */
 	public abstract WidgetAppObject<? extends Widget> createAppObject();
 
-	public abstract void handleDocumentCanvasClick(ClickEvent event);
+	/**
+	 * Handle user clicking outside the widget when focus gets lost from this widget
+	 * 
+	 * @param event
+	 */
+	public void handleDocumentCanvasClick(ClickEvent event) {
+		// Sub classes can implement
+	}
 
 	public List<Property<?, W>> getProperties() {
 		return properties;
