@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.Property;
+import com.samyem.webblocks.client.pallet.WidgetEvent;
 
 public class DesignerPage extends Composite {
 	private static DesignerPageUiBinder uiBinder = GWT.create(DesignerPageUiBinder.class);
@@ -277,9 +278,12 @@ public class DesignerPage extends Composite {
 			@com.samyem.webblocks.client.DesignerPage::generatePropertySetter(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
 		$wnd.generatePropertyGetter = 
 			@com.samyem.webblocks.client.DesignerPage::generatePropertyGetter(Ljava/lang/String;Ljava/lang/String;);
+		$wnd.generateEvent = 
+			@com.samyem.webblocks.client.DesignerPage::generateEvent(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
 		
 		$wnd.gwt_getItemNames = @com.samyem.webblocks.client.DesignerPage::getItemNames();
 		$wnd.gwt_getPropertiesForId = @com.samyem.webblocks.client.DesignerPage::getPropertiesForId(Ljava/lang/String;);
+		$wnd.gwt_getEventsForId = @com.samyem.webblocks.client.DesignerPage::getEventsForId(Ljava/lang/String;);
 	}-*/;
 
 	public static JsArray<JsArrayString> getItemNames() {
@@ -328,6 +332,30 @@ public class DesignerPage extends Composite {
 		}
 
 		GWT.log("props for id:" + items.toString());
+		return items;
+	}
+
+	/**
+	 * Get all applicable events for the item with given id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static JsArray<JsArrayString> getEventsForId(String id) {
+		JsArray<JsArrayString> items = (JsArray<JsArrayString>) JsArrayString.createArray();
+		ComponentPalletItem componentPalletItem = getItemById(id);
+		List<WidgetEvent> events = componentPalletItem.getEvents();
+
+		for (WidgetEvent e : events) {
+			String key = e.getKey();
+
+			JsArrayString item = (JsArrayString) JsArrayString.createArray();
+			items.push(item);
+
+			// id - type
+			item.push(key + (e.getDescription() == null ? "" : " - " + e.getDescription()));
+			item.push(key);
+		}
 		return items;
 	}
 
@@ -382,6 +410,28 @@ public class DesignerPage extends Composite {
 
 		String code = "$('.app #" + id + "')." + propGetterCode;
 		GWT.log("generatePropertyGetter: " + code);
+		return code;
+	}
+
+	/**
+	 * Generate javascript code necessary to handle widget events
+	 * 
+	 * @param id
+	 * @param event
+	 * @param statements
+	 * @return
+	 */
+	public static String generateEvent(String id, String event, String statements) {
+		ComponentPalletItem item = getItemById(id);
+		String jQueryEvent;
+		try {
+			jQueryEvent = me.pallet.generateEventName(item.getKey(), event);
+		} catch (Exception e) {
+			throw new RuntimeException("Unable to set property of " + id + ". " + e.getMessage());
+		}
+
+		String code = "$('.app #" + id + "')." + jQueryEvent + "(function(){\n" + statements + "})";
+		GWT.log("generateEvent: " + code);
 		return code;
 	}
 

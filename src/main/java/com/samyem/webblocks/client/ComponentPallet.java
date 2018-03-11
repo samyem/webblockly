@@ -52,6 +52,14 @@ public class ComponentPallet extends VerticalPanel {
 		}
 	}
 
+	public String generateEventName(String item, String event) throws Exception {
+		try {
+			return palletItemsByName.get(item).generateEventName(event);
+		} catch (Exception e) {
+			throw new Exception("Unable to evaluate event " + event + " for type " + item + ". " + e.getMessage());
+		}
+	}
+
 	public void handleDocumentCanvasClick(ClickEvent event) {
 		if (currentEditFocus != null) {
 			GWT.log("canvas got click");

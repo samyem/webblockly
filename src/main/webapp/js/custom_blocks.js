@@ -11,6 +11,10 @@ function getPropertiesForId(id) {
 	return props;
 }
 
+function getEventsForId(id) {
+	var events = gwt_getEventsForId(id);
+	return events;
+}
 
 function itemChange(id){
 	console.log("itemChange param: "+id);
@@ -20,10 +24,24 @@ function itemChange(id){
 	propOptions.getOptions = function(){return gwt_getPropertiesForId(id);}
 }
 
+function eventItemChange(id){
+	console.log("event itemChange param: "+id);
+	
+	var propInput = this.sourceBlock_.inputList[0];
+	var propOptions = propInput.fieldRow[1];
+	propOptions.getOptions = function(){return gwt_getEventsForId(id);}
+}
+
 function getInitialProps(){
 	var items = getItemNames();
 	if(items.length>0){
 		return getPropertiesForId(items[0][1]);
+	}
+}
+function getInitialEventss(){
+	var items = getItemNames();
+	if(items.length>0){
+		return getEventsForId(items[0][1]);
 	}
 }
 
@@ -105,6 +123,23 @@ Blockly.Blocks['get_property'] = {
 		 }
 };
 
+Blockly.Blocks['on_event'] = {
+		  init: function() {
+		    this.appendDummyInput()
+		        .appendField("When")
+		        .appendField(new Blockly.FieldDropdown(getItemNames, eventItemChange), "name");
+
+		    this.appendDummyInput()
+	        .appendField(new Blockly.FieldDropdown(getInitialEventss), "event");
+		    
+		    this.appendStatementInput("event_handler")
+	        .setCheck(null);
+		    this.setColour(130);
+		 this.setTooltip("Get property of widget");
+		 this.setHelpUrl("");
+		 }
+};
+
 Blockly.Blocks['test_call'] = {
   init: function() {
     this.jsonInit({
@@ -152,6 +187,15 @@ Blockly.JavaScript['get_property'] = function(block) {
 	  var value_name = block.getFieldValue('name');
 	  var value_property = block.getFieldValue('property');
 	  var code = generatePropertyGetter(value_name, value_property);
+	  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];;
+};
+
+Blockly.JavaScript['on_event'] = function(block) {
+	  var value_name = block.getFieldValue('name');
+	  var value_property = block.getFieldValue('event');
+	  var statements_handler = Blockly.JavaScript.statementToCode(block, 'event_handler');
+	  
+	  var code = generateEvent(value_name, value_property, statements_handler);
 	  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];;
 };
 

@@ -33,17 +33,24 @@ public abstract class ComponentPalletItem<W extends Widget> {
 	private final List<Property<?, W>> properties = new ArrayList<>();
 	private Map<String, Property<?, W>> propMap = new HashMap<>();
 
+	private final List<WidgetEvent> events = new ArrayList<>();
+	private Map<String, WidgetEvent> eventMap = new HashMap<>();
+
 	public ComponentPalletItem(Consumer<ComponentPalletItem<W>> consumerOfThis, Supplier<Integer> docLeft,
 			Supplier<Integer> docTop) {
 		this.consumerOfThis = consumerOfThis;
 		this.docTop = docTop;
 		this.docLeft = docLeft;
 
+		// base properties
 		PropertyApplier<String, W> idApplier = (w, value) -> w.getWidget().getElement().setId(value);
 		Function<WidgetAppObject<W>, String> propInitializer = t -> t.getWidget().getElement().getId();
 
 		TextProperty<W> nameProp = new TextProperty<>("Name", idApplier, propInitializer, null, null);
 		addProperty(nameProp);
+
+		// base events
+		addEvent(new WidgetEvent("clicked", "click"));
 	}
 
 	protected void addStyleProp(String property, Function<Style, String> styleGetter,
@@ -64,6 +71,11 @@ public abstract class ComponentPalletItem<W extends Widget> {
 		propMap.put(prop.getKey(), prop);
 	}
 
+	protected void addEvent(WidgetEvent event) {
+		events.add(event);
+		eventMap.put(event.getKey(), event);
+	}
+
 	public String generatePropertyGetter(String property) throws Exception {
 		Property<?, W> prop = getProperty(property);
 		GetterGenerator getterGenerator = prop.getGetterGenerator();
@@ -71,6 +83,11 @@ public abstract class ComponentPalletItem<W extends Widget> {
 			return ";\n";
 		}
 		return getterGenerator.apply();
+	}
+
+	public String generateEventName(String event) throws Exception {
+		WidgetEvent wEvent = getEvent(event);
+		return wEvent.getjQueryEventName();
 	}
 
 	public String generatePropertySetter(String property, String value) throws Exception {
@@ -93,6 +110,19 @@ public abstract class ComponentPalletItem<W extends Widget> {
 			throw new Exception("Invalid property " + property);
 		}
 		return setterGen;
+	}
+
+	private WidgetEvent getEvent(String event) throws Exception {
+		if (event == null || event.isEmpty()) {
+			throw new RuntimeException("No event was selected");
+		}
+
+		WidgetEvent wEvent = eventMap.get(event);
+		if (wEvent == null) {
+			GWT.log("Available events are: " + eventMap.keySet().toString());
+			throw new Exception("Invalid event " + event);
+		}
+		return wEvent;
 	}
 
 	/**
@@ -120,6 +150,10 @@ public abstract class ComponentPalletItem<W extends Widget> {
 
 	public List<Property<?, W>> getProperties() {
 		return properties;
+	}
+
+	public List<WidgetEvent> getEvents() {
+		return events;
 	}
 
 }
