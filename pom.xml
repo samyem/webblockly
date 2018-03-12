@@ -5,17 +5,28 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.samyem.webblocks</groupId>
   <artifactId>WebBlocks</artifactId>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>com.samyem.webblocks.WebBlocks</name>
+  <description>Web Blockly</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
 
   <properties>
-
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    
+	<gwtVersion>2.8.2</gwtVersion>
+	<googleGin>2.1.2</googleGin>    
   </properties>
 
   <dependencyManagement>
@@ -23,7 +34,7 @@
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt</artifactId>
-        <version>2.8.2</version>
+		<version>${gwtVersion}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -31,20 +42,6 @@
   </dependencyManagement>
 
   <dependencies>
-<!--   <dependency> -->
-<!--      <groupId>com.googlecode.gwtquery</groupId> -->
-<!--      <artifactId>gwtquery</artifactId> -->
-<!--      <version>1.4.3</version> -->
-<!--      <scope>provided</scope> -->
-<!--    </dependency>   -->
-  
-	
-  
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
@@ -54,26 +51,74 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>provided</scope>
+		<exclusions>
+			<exclusion>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>apache-jsp</artifactId>
+			</exclusion>
+		</exclusions>
     </dependency>
+    
+    <!-- Spring Boot -->
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-actuator</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-jdbc</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-webflux</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-configuration-processor</artifactId>
+		<optional>true</optional>
+	</dependency>
+	<dependency>
+		<groupId>org.projectlombok</groupId>
+		<artifactId>lombok</artifactId>
+		<optional>true</optional>
+	</dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
-    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
-
     <plugins>
+		<plugin>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-maven-plugin</artifactId>
+			<configuration>
+
+			</configuration>
+		</plugin>
 
       <!-- GWT Maven Plugin-->
       <plugin>
         <groupId>net.ltgt.gwt.maven</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>1.0-rc-8</version>
+        <version>1.0-rc-9</version>
         <executions>
           <execution>
             <goals>
@@ -94,9 +139,14 @@
             <arg>-compileReport</arg>
             <arg>-XcompilerMetrics</arg>
           </compilerArgs>
+          
           <!-- DevMode configuration -->
-          <warDir>${project.build.directory}/${project.build.finalName}</warDir>
-          <classpathScope>compile+runtime</classpathScope>
+			<webappDirectory>${project.build.directory}/classes/static</webappDirectory>
+			<devmodeworkdir>${project.build.directory}/classes/static</devmodeworkdir>
+			<launcherdir>${project.build.directory}/classes/static</launcherdir>
+			<wardir>${project.build.directory}/classes/static</wardir>
+          	<classpathScope>compile+runtime</classpathScope>
+          	
           <!-- URL(s) that should be opened by DevMode (gwt:devmode). -->
           <startupUrls>
             <startupUrl>WebBlocks.html</startupUrl>
@@ -107,12 +157,10 @@
       <!-- Skip normal test execution, we use gwt:test instead -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
         <configuration>
           <skip>true</skip>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>

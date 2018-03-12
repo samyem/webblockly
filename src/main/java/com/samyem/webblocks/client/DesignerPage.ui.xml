@@ -41,14 +41,14 @@
 						</g:MenuItem>
 						<g:MenuItem text="Project">
 							<g:MenuBar vertical="true">
-								<g:MenuItem text="Run (F5)" ui:field="mnuRun" />
+								<g:MenuItem text="Run (F2)" ui:field="mnuRun" />
 								<g:MenuItem text="Configure" ui:field="mnuConfig" />
 							</g:MenuBar>							
 						</g:MenuItem>
 						<g:MenuItem text="Help"/>							
 					</g:MenuBar>		         
 		         
-		           	<g:Label>Top panel info here..</g:Label>
+		           	<g:Label>Top panel info here 1..</g:Label>
 		         </g:FlowPanel>
 		       </g:north>
 		
