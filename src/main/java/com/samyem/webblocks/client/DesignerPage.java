@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -33,9 +34,11 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.samyem.webblocks.client.controller.WebBlocksClient;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.Property;
 import com.samyem.webblocks.client.pallet.WidgetEvent;
+import com.samyem.webblocks.shared.Application;
 
 public class DesignerPage extends Composite {
 	private static DesignerPageUiBinder uiBinder = GWT.create(DesignerPageUiBinder.class);
@@ -87,6 +90,20 @@ public class DesignerPage extends Composite {
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
 		me = this;
+
+		AsyncCallback<Application> callback = new AsyncCallback<Application>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+
+			}
+
+			@Override
+			public void onSuccess(Application result) {
+				GWT.log("Got app with " + result.getName());
+			}
+		};
+		WebBlocksClient.client.getWebBlocks(callback);
 
 		documentCanvas.addDomHandler(event -> {
 		}, DragOverEvent.getType());

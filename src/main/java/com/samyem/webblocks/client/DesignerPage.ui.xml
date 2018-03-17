@@ -48,7 +48,7 @@
 						<g:MenuItem text="Help"/>							
 					</g:MenuBar>		         
 		         
-		           	<g:Label>Top panel info here 1..</g:Label>
+		           	<g:Label>Top panel info here2..</g:Label>
 		         </g:FlowPanel>
 		       </g:north>
 		

@@ -6,3 +6,4 @@ gwt-unitCache/**
 war/**
 .project
 .classpath
+/war/

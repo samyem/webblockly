@@ -1,7 +1,6 @@
 package com.samyem.webblocks.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Application implements Serializable {
@@ -13,7 +12,7 @@ public class Application implements Serializable {
 	/**
 	 * Top level objects in the application. Starts with the first object
 	 */
-	private List<AppObject> objects = new ArrayList<>();
+	private List<AppObject> objects;
 
 	public String getName() {
 		return name;
@@ -33,6 +32,10 @@ public class Application implements Serializable {
 
 	public List<AppObject> getObjects() {
 		return objects;
+	}
+
+	public void setObjects(List<AppObject> objects) {
+		this.objects = objects;
 	}
 
 }

@@ -2,3 +2,5 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/webblocks
     
+server:
+  use-forward-headers: true

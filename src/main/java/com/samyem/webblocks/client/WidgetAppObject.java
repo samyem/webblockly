@@ -3,8 +3,8 @@ package com.samyem.webblocks.client;
 import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.shared.AppObject;
 
-public class WidgetAppObject<W extends Widget> extends AppObject {
-	private static final long serialVersionUID = -5564375845991778490L;
+public class WidgetAppObject<W extends Widget> {
+	private AppObject appObject;
 
 	private W widget;
 
@@ -18,6 +18,14 @@ public class WidgetAppObject<W extends Widget> extends AppObject {
 
 	public void setWidget(W widget) {
 		this.widget = widget;
+	}
+
+	public AppObject getAppObject() {
+		return appObject;
+	}
+
+	public void setAppObject(AppObject appObject) {
+		this.appObject = appObject;
 	}
 
 }
