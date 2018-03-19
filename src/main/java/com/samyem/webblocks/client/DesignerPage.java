@@ -71,7 +71,7 @@ public class DesignerPage extends Composite {
 	TabLayoutPanel tabs;
 
 	@UiField
-	MenuItem mnuRun;
+	MenuItem mnuRun, mnuOpen;
 
 	@UiField
 	PreElement console;
@@ -103,7 +103,6 @@ public class DesignerPage extends Composite {
 				GWT.log("Got app with " + result.getName());
 			}
 		};
-		WebBlocksClient.client.getWebBlocks(callback);
 
 		documentCanvas.addDomHandler(event -> {
 		}, DragOverEvent.getType());
@@ -133,6 +132,7 @@ public class DesignerPage extends Composite {
 	private void setupMenus() {
 		// run command
 		mnuRun.setScheduledCommand(this::runProject);
+		mnuOpen.setScheduledCommand(this::openApps);
 
 		Event.addNativePreviewHandler(event -> {
 			NativeEvent ne = event.getNativeEvent();
@@ -147,6 +147,12 @@ public class DesignerPage extends Composite {
 		testWindow.start(docPanel.getElement());
 
 		tabs.selectTab(testTab);
+	}
+
+	public void openApps() {
+		WebBlocksClient.client.getWebBlocks(apps -> {
+			GWT.log(apps.get(0).getName());
+		});
 	}
 
 	private void initializePropertyEditor() {

@@ -6,6 +6,8 @@ import java.util.List;
 public class Application implements Serializable {
 	private static final long serialVersionUID = -1772073813234307089L;
 
+	private Integer id;
+
 	private String name = "Unnamed Application";
 	private String description = "";
 
@@ -36,6 +38,14 @@ public class Application implements Serializable {
 
 	public void setObjects(List<AppObject> objects) {
 		this.objects = objects;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 }

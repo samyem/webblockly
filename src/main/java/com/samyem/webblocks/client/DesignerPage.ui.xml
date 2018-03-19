@@ -23,7 +23,7 @@
 						<g:MenuItem text="File">
 							<g:MenuBar vertical="true">
 								<g:MenuItem text="New (Ctrl+N)"/>
-								<g:MenuItem text="Open (Ctrl+F)"/>
+								<g:MenuItem text="Open (Ctrl+O)" ui:field="mnuOpen" />
 								<g:MenuItem text="Save (Ctrl+S)"/>
 								<g:MenuItem text="Exit"/>
 							</g:MenuBar>							

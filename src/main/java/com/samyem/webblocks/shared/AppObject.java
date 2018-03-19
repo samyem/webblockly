@@ -29,7 +29,15 @@ public class AppObject implements Serializable {
 
 	private List<AppObject> items = new ArrayList<>();
 
+	/**
+	 * Blockly generated code
+	 */
 	private String code = "";
+
+	/**
+	 * HTML generated from the designer
+	 */
+	private String html = "";
 
 	public String getName() {
 		return name;
@@ -65,6 +73,14 @@ public class AppObject implements Serializable {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
 	}
 
 }
