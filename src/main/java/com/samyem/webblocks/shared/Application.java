@@ -1,10 +1,10 @@
 package com.samyem.webblocks.shared;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Application implements Serializable {
-	private static final long serialVersionUID = -1772073813234307089L;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class Application implements IsSerializable {
 
 	private Integer id;
 

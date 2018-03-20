@@ -1,10 +1,11 @@
 package com.samyem.webblocks.shared;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * An object within application.
@@ -12,8 +13,7 @@ import java.util.Map;
  * @author samyem
  *
  */
-public class AppObject implements Serializable {
-	private static final long serialVersionUID = 1128804156574835523L;
+public class AppObject implements IsSerializable {
 
 	/**
 	 * The type of item
@@ -37,7 +37,7 @@ public class AppObject implements Serializable {
 	/**
 	 * HTML generated from the designer
 	 */
-	private String html = "";
+	private String content = "";
 
 	public String getName() {
 		return name;
@@ -75,12 +75,12 @@ public class AppObject implements Serializable {
 		this.code = code;
 	}
 
-	public String getHtml() {
-		return html;
+	public String getContent() {
+		return content;
 	}
 
-	public void setHtml(String html) {
-		this.html = html;
+	public void setContent(String html) {
+		this.content = html;
 	}
 
 }

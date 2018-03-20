@@ -22,21 +22,21 @@
 					<g:MenuBar animationEnabled="true" autoOpen="true">
 						<g:MenuItem text="File">
 							<g:MenuBar vertical="true">
-								<g:MenuItem text="New (Ctrl+N)"/>
+								<g:MenuItem text="New (Ctrl+N)"  ui:field="mnuNew" />
 								<g:MenuItem text="Open (Ctrl+O)" ui:field="mnuOpen" />
-								<g:MenuItem text="Save (Ctrl+S)"/>
-								<g:MenuItem text="Exit"/>
+								<g:MenuItem text="Save (Ctrl+S)"  ui:field="mnuSave" />
+								<g:MenuItem text="Exit"  ui:field="mnuExit" />
 							</g:MenuBar>							
 						</g:MenuItem>						
 						<g:MenuItem text="Edit">
 							<g:MenuBar vertical="true">
-								<g:MenuItem text="Undo"/>
-								<g:MenuItem text="Redo"/>
+								<g:MenuItem text="Undo" ui:field="mnuUndo" />
+								<g:MenuItem text="Redo" ui:field="mnuRedo" />
 								<g:MenuItemSeparator/>
-								<g:MenuItem text="Cut"/>
-								<g:MenuItem text="Copy"/>
-								<g:MenuItem text="Paste"/>
-								<g:MenuItem text="Delete"/>
+								<g:MenuItem text="Cut" ui:field="mnuCut" />
+								<g:MenuItem text="Copy" ui:field="mnuCopy" />
+								<g:MenuItem text="Paste" ui:field="mnuPaste" />
+								<g:MenuItem text="Delete" ui:field="mnuDelete" />
 							</g:MenuBar>							
 						</g:MenuItem>
 						<g:MenuItem text="Project">

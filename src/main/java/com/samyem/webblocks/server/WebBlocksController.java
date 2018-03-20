@@ -2,6 +2,7 @@ package com.samyem.webblocks.server;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -69,13 +71,14 @@ public class WebBlocksController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.ACCEPTED)
-	public Application saveApp(Application application) throws JsonProcessingException {
+	public Application saveApp(@RequestBody Application application) throws JsonProcessingException {
 		String appJson = mapper.writeValueAsString(application);
 
 		if (application.getId() == null) {
 			GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbc.update(con -> {
-				PreparedStatement st = con.prepareStatement("insert into application (program) values (?)");
+				PreparedStatement st = con.prepareStatement("insert into application (program) values (?)",
+						Statement.RETURN_GENERATED_KEYS);
 				st.setString(1, appJson);
 				return st;
 			}, keyHolder);

@@ -71,7 +71,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 			GWT.log("No code defined");
 			return;
 		}
-		String code = getCode(workspace);
+		String code = getJS(workspace);
 		GWT.log("code is: " + code);
 		eval(code);
 	}
@@ -80,10 +80,25 @@ public class CodeEditor extends ResizeLayoutPanel {
 		$wnd.eval(js);
 	}-*/;
 
-	private native String getCode(JavaScriptObject workspace) /*-{
+	private native String getJS(JavaScriptObject workspace) /*-{
 		console.log(workspace);
 		var code = $wnd.Blockly.JavaScript.workspaceToCode(workspace);
 		return code;
+	}-*/;
+
+	/**
+	 * Get the blocks as XML text
+	 * 
+	 * @return
+	 */
+	public String getCode() {
+		return getNativeCode(workspace);
+	}
+
+	public native String getNativeCode(JavaScriptObject workspace) /*-{
+		var xml = $wnd.Blockly.Xml.workspaceToDom(workspace);
+		var xmlText = $wnd.Blockly.Xml.domToText(xml);
+		return xmlText;
 	}-*/;
 
 	private native JavaScriptObject createBlockly(Element element) /*-{

@@ -1,5 +1,9 @@
 package com.samyem.webblocks.client;
 
+import static com.samyem.webblocks.client.controller.Callback.callback;
+import static com.samyem.webblocks.client.controller.WebBlocksClient.webBlocksService;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +29,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -34,10 +37,10 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.samyem.webblocks.client.controller.WebBlocksClient;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.Property;
 import com.samyem.webblocks.client.pallet.WidgetEvent;
+import com.samyem.webblocks.shared.AppObject;
 import com.samyem.webblocks.shared.Application;
 
 public class DesignerPage extends Composite {
@@ -71,7 +74,7 @@ public class DesignerPage extends Composite {
 	TabLayoutPanel tabs;
 
 	@UiField
-	MenuItem mnuRun, mnuOpen;
+	MenuItem mnuRun, mnuOpen, mnuSave;
 
 	@UiField
 	PreElement console;
@@ -79,6 +82,8 @@ public class DesignerPage extends Composite {
 	private Element lastSelectedElement;
 
 	private static DesignerPage me;
+
+	private Application app;
 
 	/**
 	 * Items in the document by name
@@ -91,18 +96,7 @@ public class DesignerPage extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		me = this;
 
-		AsyncCallback<Application> callback = new AsyncCallback<Application>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-
-			}
-
-			@Override
-			public void onSuccess(Application result) {
-				GWT.log("Got app with " + result.getName());
-			}
-		};
+		newApp();
 
 		documentCanvas.addDomHandler(event -> {
 		}, DragOverEvent.getType());
@@ -129,10 +123,21 @@ public class DesignerPage extends Composite {
 		registerJNSICalls();
 	}
 
+	private void newApp() {
+		app = new Application();
+		app.setName("Untitled");
+		List<AppObject> objects = new ArrayList<>(1);
+		AppObject appObj = new AppObject();
+		appObj.setName("page");
+		objects.add(appObj);
+		app.setObjects(objects);
+	}
+
 	private void setupMenus() {
 		// run command
 		mnuRun.setScheduledCommand(this::runProject);
 		mnuOpen.setScheduledCommand(this::openApps);
+		mnuSave.setScheduledCommand(this::save);
 
 		Event.addNativePreviewHandler(event -> {
 			NativeEvent ne = event.getNativeEvent();
@@ -145,14 +150,28 @@ public class DesignerPage extends Composite {
 
 	public void runProject() {
 		testWindow.start(docPanel.getElement());
-
 		tabs.selectTab(testTab);
 	}
 
 	public void openApps() {
-		WebBlocksClient.client.getWebBlocks(apps -> {
-			GWT.log(apps.get(0).getName());
-		});
+		// WebBlocksClient.webBlocksService.getWebBlocks(Callback<List<Application>>.callback(consumer));.client.getWebBlocks(apps
+		// -> {
+		// GWT.log(apps.get(0).getName());
+		// });
+	}
+
+	public void save() {
+		AppObject obj = app.getObjects().get(0);
+		Element rootElement = docPanel.getElement();
+		String appContent = rootElement.getInnerHTML();
+		obj.setContent(appContent);
+
+		String xml = codeEditor.getCode();
+		obj.setCode(xml);
+
+		webBlocksService.saveApp(app, callback(a -> {
+			GWT.log("Saved " + a.getName());
+		}));
 	}
 
 	private void initializePropertyEditor() {
