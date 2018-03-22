@@ -1,5 +1,6 @@
 .gwt-DialogBox {
   width: 400px;
+  z-index: 100;
 }
 
 .dialogVPanel {
@@ -21,4 +22,18 @@
 
 .docElement[contenteditable=true]{
 	cursor: default;	
+}
+
+.tableHeader{
+	font-weight: bold;
+	background: #EFEFEF;
+}
+
+.selTable{
+	cursor: pointer;
+}
+
+.selTable .selected{
+	background: #197de1;
+	color: #c8dbed;
 }

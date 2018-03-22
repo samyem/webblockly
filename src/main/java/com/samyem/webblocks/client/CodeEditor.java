@@ -95,10 +95,19 @@ public class CodeEditor extends ResizeLayoutPanel {
 		return getNativeCode(workspace);
 	}
 
+	public void setCode(String code) {
+		setNativeCode(workspace, code);
+	}
+
 	public native String getNativeCode(JavaScriptObject workspace) /*-{
 		var xml = $wnd.Blockly.Xml.workspaceToDom(workspace);
 		var xmlText = $wnd.Blockly.Xml.domToText(xml);
 		return xmlText;
+	}-*/;
+
+	public native void setNativeCode(JavaScriptObject workspace, String code) /*-{
+		var xml = $wnd.Blockly.Xml.textToDom(code);
+		$wnd.Blockly.Xml.domToWorkspace(xml, workspace);
 	}-*/;
 
 	private native JavaScriptObject createBlockly(Element element) /*-{

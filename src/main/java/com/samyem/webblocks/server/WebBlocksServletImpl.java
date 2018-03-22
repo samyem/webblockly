@@ -22,7 +22,9 @@ import com.samyem.webblocks.client.WebBlocksService;
 import com.samyem.webblocks.shared.Application;
 
 public class WebBlocksServletImpl extends RemoteServiceServlet implements WebBlocksService {
-	final static Logger logger = LoggerFactory.getLogger(WebBlocksController.class);
+	private static final long serialVersionUID = -6779975088058402888L;
+
+	final static Logger logger = LoggerFactory.getLogger(WebBlocksServletImpl.class);
 
 	@Autowired
 	private JdbcOperations jdbc;

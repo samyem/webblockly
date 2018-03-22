@@ -153,11 +153,18 @@ public class DesignerPage extends Composite {
 		tabs.selectTab(testTab);
 	}
 
+	// load app
 	public void openApps() {
-		// WebBlocksClient.webBlocksService.getWebBlocks(Callback<List<Application>>.callback(consumer));.client.getWebBlocks(apps
-		// -> {
-		// GWT.log(apps.get(0).getName());
-		// });
+		OpenAppDialog.show(a -> {
+			if (a != null) {
+				app = a;
+				GWT.log(a.getName());
+
+				AppObject topObj = a.getObjects().get(0);
+				docPanel.getElement().setInnerHTML(topObj.getContent());
+				codeEditor.setCode(topObj.getCode());
+			}
+		});
 	}
 
 	public void save() {
@@ -171,6 +178,7 @@ public class DesignerPage extends Composite {
 
 		webBlocksService.saveApp(app, callback(a -> {
 			GWT.log("Saved " + a.getName());
+			app = a;
 		}));
 	}
 

@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `application`;
 CREATE TABLE `application` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `program` json NOT NULL,
-  `name` varchar(1024) GENERATED ALWAYS AS (json_extract(`program`,'$.name')) VIRTUAL,
+  `name` varchar(1024) GENERATED ALWAYS AS (program->>'$.name') VIRTUAL,
   PRIMARY KEY (`id`),
   KEY `application_name_idx` (`name`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;

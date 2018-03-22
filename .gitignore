@@ -7,3 +7,5 @@ war/**
 .project
 .classpath
 /war/
+/.dbeaver-data-sources.xml
+/.factorypath

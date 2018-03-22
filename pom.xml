@@ -47,6 +47,11 @@
 		  <artifactId>guava</artifactId>
 		  <version>24.1-jre</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.realityforge.gwt.cache-filter</groupId>
+		    <artifactId>gwt-cache-filter</artifactId>
+		    <version>0.7</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.google.gwt</groupId>
