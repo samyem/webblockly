@@ -50,7 +50,12 @@ public class LabelPalletItem extends TextualPalletItem<Label> {
 
 	@Override
 	public String getKey() {
-		return "label";
+		return "lbl";
+	}
+
+	@Override
+	public String getFriendlyName() {
+		return "Text";
 	}
 
 }

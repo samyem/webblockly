@@ -37,3 +37,8 @@
 	background: #197de1;
 	color: #c8dbed;
 }
+
+.palletItem{
+	cursor: default;
+	user-select: none;
+}

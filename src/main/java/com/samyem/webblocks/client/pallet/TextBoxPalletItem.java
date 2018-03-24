@@ -47,7 +47,12 @@ public class TextBoxPalletItem extends StyledPalletItem<TextBox> {
 
 	@Override
 	public String getKey() {
-		return "textBox";
+		return "txtBox";
+	}
+
+	@Override
+	public String getFriendlyName() {
+		return "Text Input";
 	}
 
 }

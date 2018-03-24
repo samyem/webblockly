@@ -5,7 +5,8 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.samyem.webblocks.client.pallet.ButtonPalletItem;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
@@ -70,14 +71,17 @@ public class ComponentPallet extends VerticalPanel {
 
 	private void addItem(ComponentPalletItem componentItem) {
 		String key = componentItem.getKey();
-		String icon = "icons/pallet-" + key + ".png";
+		String icon = "icons/pallet-" + key + ".gif";
 		palletItemsByName.put(key, componentItem);
 
-		Image image = new Image(icon);
-		image.setTitle(key);
-		add(image);
+		HTML palletItem = new HTML(
+				"<img src='icons/pallet-" + componentItem.getKey() + ".gif'> " + componentItem.getFriendlyName());
+		palletItem.getElement().setDraggable(Element.DRAGGABLE_TRUE);
+		palletItem.setStyleName("palletItem");
+		palletItem.setTitle(key);
+		add(palletItem);
 
-		image.addDragStartHandler(event -> {
+		palletItem.addDragStartHandler(event -> {
 			event.setData("item", key);
 			event.setData("action", "add");
 		});

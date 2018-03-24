@@ -132,6 +132,8 @@ public abstract class ComponentPalletItem<W extends Widget> {
 	 */
 	public abstract String getKey();
 
+	public abstract String getFriendlyName();
+
 	/**
 	 * An app object that has a widget attached to it
 	 * 
