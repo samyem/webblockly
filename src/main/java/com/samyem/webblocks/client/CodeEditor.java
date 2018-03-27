@@ -47,21 +47,15 @@ public class CodeEditor extends ResizeLayoutPanel {
 
 		GWT.log("change test");
 
-		Timer timer = new Timer() {
-
+		new Timer() {
 			@Override
 			public void run() {
 				Element element = getElement();
-
-				GWT.log("H:" + element.getClientHeight() + ", " + element.getClientWidth());
-
 				workspace = createBlockly(element);
 				clear();
+				initialized = true;
 			}
-		};
-		timer.schedule(100);
-
-		initialized = true;
+		}.schedule(300);
 	}
 
 	public void run() {
@@ -126,6 +120,7 @@ public class CodeEditor extends ResizeLayoutPanel {
 			trashcan : true
 		});
 
+		$wnd.wrkspc = workspace;
 		return workspace;
 	}-*/;
 

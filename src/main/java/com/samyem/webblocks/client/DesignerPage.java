@@ -29,6 +29,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -162,7 +163,18 @@ public class DesignerPage extends Composite {
 
 				AppObject topObj = a.getObjects().get(0);
 				docPanel.getElement().setInnerHTML(topObj.getContent());
-				codeEditor.setCode(topObj.getCode());
+
+				// tab needs to be visible for it to set code
+				tabs.selectTab(codeEditor);
+
+				// TODO: hack till figured out a way to do this with callbacks after blockly is
+				// fully initialized
+				new Timer() {
+					@Override
+					public void run() {
+						codeEditor.setCode(topObj.getCode());
+					}
+				}.schedule(550);
 			}
 		});
 	}
