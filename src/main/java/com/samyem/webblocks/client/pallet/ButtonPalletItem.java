@@ -53,7 +53,7 @@ public class ButtonPalletItem extends TextualPalletItem<Button> {
 
 	@Override
 	public String getKey() {
-		return "btn";
+		return "button";
 	}
 
 	@Override

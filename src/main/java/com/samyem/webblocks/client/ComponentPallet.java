@@ -9,6 +9,7 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.samyem.webblocks.client.pallet.ButtonPalletItem;
+import com.samyem.webblocks.client.pallet.CirclePalletItem;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.LabelPalletItem;
 import com.samyem.webblocks.client.pallet.TextBoxPalletItem;
@@ -31,8 +32,10 @@ public class ComponentPallet extends VerticalPanel {
 		addItem(new LabelPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 		addItem(new ButtonPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 		addItem(new TextBoxPalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
+		addItem(new CirclePalletItem(w -> currentEditFocus = w, () -> docLeft, () -> docTop));
 	}
 
+	@SuppressWarnings("rawtypes")
 	public ComponentPalletItem createPalletItem(String item) {
 		return palletItemsByName.get(item);
 	}

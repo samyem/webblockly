@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.vectomatic.dom.svg.OMSVGSVGElement;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.PreElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DragEndEvent;
@@ -41,6 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.samyem.webblocks.client.pallet.ComponentPalletItem;
 import com.samyem.webblocks.client.pallet.Property;
 import com.samyem.webblocks.client.pallet.WidgetEvent;
+import com.samyem.webblocks.client.svgwidget.SVGWidget;
 import com.samyem.webblocks.shared.AppObject;
 import com.samyem.webblocks.shared.Application;
 
@@ -93,9 +97,18 @@ public class DesignerPage extends Composite {
 
 	private Map<String, Integer> countByItemType = new HashMap<>();
 
+	private OMSVGSVGElement svg = SVGWidget.doc.createSVGSVGElement();
+
 	public DesignerPage() {
 		initWidget(uiBinder.createAndBindUi(this));
 		me = this;
+
+		svg.getStyle().setOverflow(Overflow.VISIBLE);
+		// svg.setViewBox(0f, 0f, 300f, 200f);
+		svg.getWidth().getBaseVal().newValueSpecifiedUnits(Unit.PCT, 100);
+		svg.getHeight().getBaseVal().newValueSpecifiedUnits(Unit.PCT, 100);
+
+		docPanel.getElement().appendChild(svg.getElement());
 
 		newApp();
 
@@ -122,7 +135,25 @@ public class DesignerPage extends Composite {
 		testWindow.setCodeEditor(codeEditor);
 
 		registerJNSICalls();
+
+		// test();
 	}
+
+	// private void test() {
+	// OMSVGEllipseElement ellipse = doc.createSVGEllipseElement(60f, 80f, 30f,
+	// 15f);
+	//
+	// ellipse.getCx().getBaseVal().setValue(10f);
+	//
+	// OMSVGStyle style = ellipse.getStyle();
+	// style.setSVGProperty(SVGConstants.CSS_FILL_PROPERTY,
+	// SVGConstants.CSS_YELLOW_VALUE);
+	// style.setSVGProperty(SVGConstants.CSS_STROKE_PROPERTY,
+	// SVGConstants.CSS_BLACK_VALUE);
+	// style.setSVGProperty(SVGConstants.CSS_STROKE_DASHARRAY_PROPERTY, "5,2,2,2");
+	//
+	// svg.appendChild(ellipse);
+	// }
 
 	private void newApp() {
 		app = new Application();
@@ -174,7 +205,7 @@ public class DesignerPage extends Composite {
 					public void run() {
 						codeEditor.setCode(topObj.getCode());
 					}
-				}.schedule(550);
+				}.schedule(350);
 			}
 		});
 	}
@@ -243,16 +274,21 @@ public class DesignerPage extends Composite {
 		ComponentPalletItem palletItem = pallet.createPalletItem(item);
 		WidgetAppObject<? extends Widget> widgetObj = palletItem.createAppObject();
 		Widget widget = widgetObj.getWidget();
-		docPanel.add(widget, x, y);
 
-		String elementId = createUniqueId(palletItem.getKey());
-		documentItemsMap.put(elementId, palletItem);
-		setupWidget(widget, elementId, docTop, docLeft);
+		if (widget instanceof SVGWidget) {
+			((SVGWidget) widget).addToSvg(svg, x, y);
+		} else {
+			docPanel.add(widget, x, y);
 
-		List<Property<?, ? extends Widget>> props = palletItem.getProperties();
-		applyProperties(props, widgetObj);
+			String elementId = createUniqueId(palletItem.getKey());
+			documentItemsMap.put(elementId, palletItem);
+			setupWidget(widget, elementId, docTop, docLeft);
 
-		widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
+			List<Property<?, ? extends Widget>> props = palletItem.getProperties();
+			applyProperties(props, widgetObj);
+
+			widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
+		}
 
 		GWT.log(x + "," + y);
 	}

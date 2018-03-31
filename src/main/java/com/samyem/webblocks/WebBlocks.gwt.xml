@@ -4,6 +4,7 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="com.google.gwt.precompress.Precompress"/>
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+  <inherits name='org.vectomatic.libgwtsvg'/>
   
   <entry-point class='com.samyem.webblocks.client.WebBlocks'/>
 
