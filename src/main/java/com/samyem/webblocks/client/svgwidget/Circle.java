@@ -1,5 +1,6 @@
 package com.samyem.webblocks.client.svgwidget;
 
+import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGEllipseElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
 import org.vectomatic.dom.svg.OMSVGStyle;
@@ -7,7 +8,6 @@ import org.vectomatic.dom.svg.utils.SVGConstants;
 
 public class Circle extends SVGWidget {
 	protected com.google.gwt.dom.client.Element svgElement;
-	private OMSVGSVGElement svg;
 	private OMSVGEllipseElement ellipse;
 
 	public Circle() {
@@ -24,6 +24,13 @@ public class Circle extends SVGWidget {
 		// style.setSVGProperty(SVGConstants.CSS_STROKE_DASHARRAY_PROPERTY, "5,2,2,2");
 
 		svg.appendChild(ellipse);
+
+		setElement(ellipse.getElement());
+	}
+
+	@Override
+	public OMSVGElement getSvgElement() {
+		return ellipse;
 	}
 
 }

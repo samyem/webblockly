@@ -10,7 +10,7 @@
             font-family: monospace;
         }
         .docPanel{
-			overflow: visible !important;
+			overflow: scroll !important;
 		}
     </ui:style>
 
@@ -63,10 +63,8 @@
 					         </g:FlowPanel>
 					       </g:west>
 		       				<g:center type="g:SingleChildWidgetType">
-						       	<g:ScrollPanel ui:field="documentCanvas" styleName="designArea">
-						       		<g:AbsolutePanel height="100%" ui:field="docPanel" styleName="{style.docPanel}">
-						       		</g:AbsolutePanel>
-						       	</g:ScrollPanel>
+					       		<g:AbsolutePanel ui:field="docPanel" styleName="{style.docPanel} designArea">
+					       		</g:AbsolutePanel>
 		       				</g:center>
 		       				
 					       <g:east size='250'>

@@ -42,3 +42,7 @@
 	cursor: default;
 	user-select: none;
 }
+
+.selectedChar{
+	opacity: 0.5;
+}

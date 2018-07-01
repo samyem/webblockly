@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.vectomatic.dom.svg.OMSVGElement;
 import org.vectomatic.dom.svg.OMSVGSVGElement;
+import org.vectomatic.dom.svg.itf.ISVGStylable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JsArray;
@@ -20,8 +22,6 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DragEndEvent;
-import com.google.gwt.event.dom.client.DragEndHandler;
 import com.google.gwt.event.dom.client.DragOverEvent;
 import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.HasAllDragAndDropHandlers;
@@ -33,6 +33,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -61,7 +62,7 @@ public class DesignerPage extends Composite {
 	AbsolutePanel docPanel;
 
 	@UiField
-	ScrollPanel documentCanvas, testTab;
+	ScrollPanel testTab;
 
 	@UiField
 	ComponentPallet pallet;
@@ -84,7 +85,7 @@ public class DesignerPage extends Composite {
 	@UiField
 	PreElement console;
 
-	private Element lastSelectedElement;
+	private Widget lastSelectedElement;
 
 	private static DesignerPage me;
 
@@ -112,15 +113,15 @@ public class DesignerPage extends Composite {
 
 		newApp();
 
-		documentCanvas.addDomHandler(event -> {
+		docPanel.addDomHandler(event -> {
 		}, DragOverEvent.getType());
 
-		documentCanvas.addDomHandler(event -> {
+		docPanel.addDomHandler(event -> {
 			event.preventDefault();
 			handleDocDrop(event);
 		}, DropEvent.getType());
 
-		documentCanvas.addDomHandler(event -> {
+		docPanel.addDomHandler(event -> {
 			event.preventDefault();
 			handleClick(event);
 		}, ClickEvent.getType());
@@ -211,6 +212,11 @@ public class DesignerPage extends Composite {
 	}
 
 	public void save() {
+		String name = Window.prompt("Save as: ", app.getName());
+		if (name != null) {
+			app.setName(name);
+		}
+
 		AppObject obj = app.getObjects().get(0);
 		Element rootElement = docPanel.getElement();
 		String appContent = rootElement.getInnerHTML();
@@ -280,21 +286,28 @@ public class DesignerPage extends Composite {
 		} else {
 			docPanel.add(widget, x, y);
 
-			String elementId = createUniqueId(palletItem.getKey());
-			documentItemsMap.put(elementId, palletItem);
-			setupWidget(widget, elementId, docTop, docLeft);
-
-			List<Property<?, ? extends Widget>> props = palletItem.getProperties();
-			applyProperties(props, widgetObj);
-
-			widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
 		}
+
+		String elementId = createUniqueId(palletItem.getKey());
+		documentItemsMap.put(elementId, palletItem);
+		setupWidget(widget, elementId, docTop, docLeft);
+
+		List<Property<?, ? extends Widget>> props = palletItem.getProperties();
+		applyProperties(props, widgetObj);
+
+		widget.addDomHandler((e) -> applyProperties(props, widgetObj), ClickEvent.getType());
 
 		GWT.log(x + "," + y);
 	}
 
 	private void setupWidget(Widget widget, String elementId, int docTop, int docLeft) {
-		widget.setStyleName("docElement");
+		if (widget instanceof SVGWidget) {
+			OMSVGElement element = ((SVGWidget) widget).getSvgElement();
+			((ISVGStylable) element).setClassNameBaseVal("docElement");
+		} else {
+			widget.setStyleName("docElement");
+		}
+
 		Element element = widget.getElement();
 		element.setId(elementId);
 
@@ -302,22 +315,21 @@ public class DesignerPage extends Composite {
 			((HasClickHandlers) widget).addClickHandler(e -> e.stopPropagation());
 		}
 
-		widget.getElement().setDraggable(Element.DRAGGABLE_TRUE);
+		element.setDraggable(Element.DRAGGABLE_TRUE);
+
+		element.setId(elementId);
 
 		if (widget instanceof HasAllDragAndDropHandlers) {
 			HasAllDragAndDropHandlers dragHandler = (HasAllDragAndDropHandlers) widget;
 			dragHandler.addDragStartHandler(e -> e.setData("action", "move"));
-			dragHandler.addDragEndHandler(new DragEndHandler() {
-				@Override
-				public void onDragEnd(DragEndEvent event) {
-					NativeEvent nativeEvent = event.getNativeEvent();
-					int x = nativeEvent.getClientX() - docLeft;
-					int y = nativeEvent.getClientY() - docTop;
+			dragHandler.addDragEndHandler(event -> {
+				NativeEvent nativeEvent = event.getNativeEvent();
+				int x = nativeEvent.getClientX() - docLeft;
+				int y = nativeEvent.getClientY() - docTop;
 
-					Style style = widget.getElement().getStyle();
-					style.setTop(y, Unit.PX);
-					style.setLeft(x, Unit.PX);
-				}
+				Style style = widget.getElement().getStyle();
+				style.setTop(y, Unit.PX);
+				style.setLeft(x, Unit.PX);
 			});
 		}
 	}
@@ -343,13 +355,29 @@ public class DesignerPage extends Composite {
 		}
 
 		// mark element as selected
-		Element selectedElement = widget.getWidget().getElement();
-		selectedElement.addClassName("selected");
+		Widget widgetContent = widget.getWidget();
 
-		if (lastSelectedElement != null && lastSelectedElement != selectedElement) {
-			lastSelectedElement.removeClassName("selected");
+		if (widgetContent instanceof SVGWidget) {
+			OMSVGElement element = ((SVGWidget) widgetContent).getSvgElement();
+			ISVGStylable isvgStylable = (ISVGStylable) element;
+			isvgStylable.addClassNameBaseVal("selected");
+
+		} else {
+			Element selectedElement = widgetContent.getElement();
+			selectedElement.addClassName("selected");
+
 		}
-		lastSelectedElement = selectedElement;
+
+		if (lastSelectedElement != null && lastSelectedElement != widgetContent) {
+			if (lastSelectedElement instanceof SVGWidget) {
+				OMSVGElement element = ((SVGWidget) lastSelectedElement).getSvgElement();
+				ISVGStylable isvgStylable = (ISVGStylable) element;
+				isvgStylable.removeClassNameBaseVal("selected");
+			} else {
+				lastSelectedElement.getElement().removeClassName("selected");
+			}
+		}
+		lastSelectedElement = widgetContent;
 	}
 
 	public static void printToConsole(String object) {
